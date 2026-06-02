@@ -1,0 +1,3 @@
+ano,uf,municipio,acidentes,mortos,feridos,pessoas,veiculos
+# Coloque aqui o CSV real. Cabeçalhos esperados:
+# ano,uf,municipio,acidentes,mortos,feridos,pessoas,veiculos
