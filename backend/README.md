@@ -62,7 +62,7 @@ Se quiser uma pasta de dados em outro local, defina `DATA_DIR=/caminho/dos/csvs`
 No projeto Lovable, defina a variável de ambiente:
 
 ```
-VITE_API_URL=https://sua-api.onrender.com
+VITE_API_URL=http://localhost:8000
 ```
 
 E recarregue o preview.
