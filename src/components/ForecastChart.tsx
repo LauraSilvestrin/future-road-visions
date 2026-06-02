@@ -65,7 +65,7 @@ export function ForecastChart({ data, splitYear, color = "var(--color-chart-1)" 
               borderRadius: 12,
               fontSize: 12,
             }}
-            formatter={(v: number | null) => (v == null ? "—" : Math.round(v).toLocaleString("pt-BR"))}
+            formatter={(v) => (v == null ? "—" : Math.round(Number(v)).toLocaleString("pt-BR"))}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} />
           <Area type="monotone" dataKey="banda" stroke="none" fill={`url(#band-${data.metric})`} name="Intervalo de confiança" />
