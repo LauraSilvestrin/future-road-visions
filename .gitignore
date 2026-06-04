@@ -31,8 +31,8 @@ dist-ssr
 *.sln
 *.sw?
 
-.venv
 # Python
+.venv/
+backend/.venv/
 __pycache__/
 *.py[cod]
-backend/__pycache__/
