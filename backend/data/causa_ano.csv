@@ -1,689 +1,143 @@
-﻿ano;causa_acidente;acidentes;mortos
-2007;Animais na Pista;4202;102
-2007;Defeito mecânico em veículo;5403;119
-2007;Defeito na via;2348;70
-2007;Desobediência à sinalização;4041;222
-2007;Dormindo;3364;222
-2007;Falta de atenção;42256;1498
-2007;Ingestão de álcool;3106;181
-2007;Não guardar distância de segurança;8137;69
-2007;Outras;45968;3219
-2007;Ultrapassagem indevida;2839;511
-2007;Velocidade incompatível;6011;529
-2008;Animais na Pista;4582;84
-2008;Defeito mecânico em veículo;5858;186
-2008;Defeito na via;2191;80
-2008;Desobediência à sinalização;4592;223
-2008;Dormindo;3330;244
-2008;Falta de atenção;46307;1467
-2008;Ingestão de álcool;3561;207
-2008;Não guardar distância de segurança;9742;48
-2008;Outras;49971;3313
-2008;Ultrapassagem indevida;2994;523
-2008;Velocidade incompatível;7915;539
-2009;Animais na Pista;4205;79
-2009;Defeito mecânico em veículo;6019;124
-2009;Defeito na via;2611;98
-2009;Desobediência à sinalização;5171;221
-2009;Dormindo;3335;261
-2009;Falta de atenção;52070;1523
-2009;Ingestão de álcool;4813;249
-2009;Não guardar distância de segurança;11476;57
-2009;Outras;55549;3625
-2009;Ultrapassagem indevida;3073;484
-2009;Velocidade incompatível;10324;620
-2010;Animais na Pista;4803;102
-2010;Defeito mecânico em veículo;6944;136
-2010;Defeito na via;2414;88
-2010;Desobediência à sinalização;7157;317
-2010;Dormindo;4402;272
-2010;Falta de atenção;60879;1737
-2010;Ingestão de álcool;6806;401
-2010;Não guardar distância de segurança;15588;94
-2010;Outras;56871;3987
-2010;Ultrapassagem indevida;3932;636
-2010;Velocidade incompatível;13673;853
-2011;(null);1;0
-2011;Animais na Pista;5008;110
-2011;Defeito mecânico em veículo;6981;171
-2011;Defeito na via;2790;91
-2011;Desobediência à sinalização;7823;397
-2011;Dormindo;4404;286
-2011;Falta de atenção;63526;1731
-2011;Ingestão de álcool;7559;345
-2011;Não guardar distância de segurança;17311;80
-2011;Outras;56505;3641
-2011;Ultrapassagem indevida;4249;843
-2011;Velocidade incompatível;16169;980
-2012;(null);1;0
-2012;Animais na Pista;4834;126
-2012;Defeito mecânico em veículo;6831;177
-2012;Defeito na via;2339;86
-2012;Desobediência à sinalização;7789;376
-2012;Dormindo;4625;332
-2012;Falta de atenção;61205;1676
-2012;Ingestão de álcool;7594;485
-2012;Não guardar distância de segurança;18804;96
-2012;Outras;49582;3390
-2012;Ultrapassagem indevida;4134;818
-2012;Velocidade incompatível;16830;1101
-2013;Animais na Pista;4768;119
-2013;Defeito mecânico em veículo;7162;157
-2013;Defeito na via;2740;94
-2013;Desobediência à sinalização;8078;411
-2013;Dormindo;4827;367
-2013;Falta de atenção;62854;1507
-2013;Ingestão de álcool;7527;430
-2013;Não guardar distância de segurança;21571;140
-2013;Outras;44055;3190
-2013;Ultrapassagem indevida;4472;772
-2013;Velocidade incompatível;18694;1239
-2014;Animais na Pista;3737;103
-2014;Defeito mecânico em veículo;6886;170
-2014;Defeito na via;2598;103
-2014;Desobediência à sinalização;8167;467
-2014;Dormindo;4794;352
-2014;Falta de atenção;55089;1510
-2014;Ingestão de álcool;7391;508
-2014;Não guardar distância de segurança;19588;106
-2014;Outras;38990;3006
-2014;Ultrapassagem indevida;4245;745
-2014;Velocidade incompatível;17716;1164
-2015;Animais na Pista;3080;111
-2015;Defeito mecânico em veículo;5729;154
-2015;Defeito na via;1994;111
-2015;Desobediência à sinalização;6015;406
-2015;Dormindo;4067;329
-2015;Falta de atenção;36805;1209
-2015;Ingestão de álcool;6745;480
-2015;Não guardar distância de segurança;11402;92
-2015;Outras;29064;2438
-2015;Ultrapassagem indevida;2998;591
-2015;Velocidade incompatível;14262;946
-2016;Animais na Pista;2605;90
-2016;Defeito mecânico em veículo;5111;128
-2016;Defeito na via;1571;82
-2016;Desobediência à sinalização;4852;370
-2016;Dormindo;3763;290
-2016;Falta de atenção;26451;1215
-2016;Ingestão de álcool;6332;439
-2016;Não guardar distância de segurança;6361;99
-2016;Outras;24668;2261
-2016;Ultrapassagem indevida;2327;510
-2016;Velocidade incompatível;12322;914
-2017;Agressão Externa;2;0
-2017;Animais na Pista;2624;103
-2017;Avarias e/ou desgaste excessivo no pneu;1588;57
-2017;Carga excessiva e/ou mal acondicionada;545;17
-2017;Condutor Dormindo;3798;371
-2017;Defeito Mecânico no Veículo;4649;101
-2017;Defeito na Via;1422;92
-2017;Deficiência ou não Acionamento do Sistema de Iluminação/Sinalização do Veículo;235;32
-2017;Desobediência às normas de trânsito pelo condutor;5219;399
-2017;Desobediência às normas de trânsito pelo pedestre;1;0
-2017;Falta de Atenção do Pedestre;2390;712
-2017;Falta de Atenção à Condução;34510;1845
-2017;Fenômenos da Natureza;442;29
-2017;Ingestão de Substâncias Psicoativas;78;17
-2017;Ingestão de Álcool;6448;455
-2017;Mal Súbito;972;170
-2017;Não guardar distância de segurança;5837;107
-2017;Objeto estático sobre o leito carroçável;769;37
-2017;Pista Escorregadia;4253;153
-2017;Reação tardia ou ineficiente do condutor;1;0
-2017;Restrição de Visibilidade;884;99
-2017;Sinalização da via insuficiente ou inadequada;414;20
-2017;Ultrapassagem Indevida;2054;425
-2017;Velocidade Incompatível;10432;1007
-2018;Acumulo de areia ou detritos sobre o pavimento;1;0
-2018;Agressão Externa;356;15
-2018;Animais na Pista;1618;98
-2018;Avarias e/ou desgaste excessivo no pneu;1011;48
-2018;Carga excessiva e/ou mal acondicionada;367;11
-2018;Condutor Dormindo;2633;302
-2018;Curva acentuada;1;0
-2018;Defeito Mecânico no Veículo;3717;127
-2018;Defeito na Via;1128;78
-2018;Deficiência ou não Acionamento do Sistema de Iluminação/Sinalização do Veículo;186;28
-2018;Desobediência às normas de trânsito pelo condutor;7194;691
-2018;Desobediência às normas de trânsito pelo pedestre;273;87
-2018;Desrespeitar a preferência no cruzamento;1;0
-2018;Falta de Atenção do Pedestre;2074;605
-2018;Falta de Atenção à Condução;25841;1370
-2018;Fenômenos da Natureza;310;11
-2018;Ingestão de Substâncias Psicoativas;73;6
-2018;Ingestão de substâncias psicoativas pelo condutor;1;0
-2018;Ingestão de Álcool;5203;304
-2018;Ingestão de álcool e/ou substâncias psicoativas pelo pedestre;247;27
-2018;Ingestão de álcool pelo condutor;51;1
-2018;Mal Súbito;677;115
-2018;Não guardar distância de segurança;4266;82
-2018;Objeto estático sobre o leito carroçável;539;19
-2018;Pedestre andava na pista;1;0
-2018;Pista Escorregadia;2549;106
-2018;Reação tardia ou ineficiente do condutor;1;0
-2018;Restrição de Visibilidade;540;79
-2018;Sinalização da via insuficiente ou inadequada;291;35
-2018;Ultrapassagem Indevida;1333;286
-2018;Velocidade Incompatível;6850;743
-2019;Acumulo de areia ou detritos sobre o pavimento;1;0
-2019;Agressão Externa;384;18
-2019;Animais na Pista;1534;92
-2019;Ausência de reação do condutor;1;0
-2019;Avarias e/ou desgaste excessivo no pneu;801;33
-2019;Carga excessiva e/ou mal acondicionada;305;18
-2019;Chuva;1;0
-2019;Condutor Dormindo;2483;311
-2019;Defeito Mecânico no Veículo;3742;116
-2019;Defeito na Via;978;47
-2019;Deficiência ou não Acionamento do Sistema de Iluminação/Sinalização do Veículo;159;26
-2019;Demais falhas mecânicas ou elétricas;3;0
-2019;Desobediência às normas de trânsito pelo condutor;8106;843
-2019;Desobediência às normas de trânsito pelo pedestre;393;137
-2019;Falta de Atenção do Pedestre;1971;587
-2019;Falta de Atenção à Condução;25030;1268
-2019;Fenômenos da Natureza;231;12
-2019;Ingestão de Substâncias Psicoativas;94;10
-2019;Ingestão de substâncias psicoativas pelo condutor;1;0
-2019;Ingestão de Álcool;5420;324
-2019;Ingestão de álcool e/ou substâncias psicoativas pelo pedestre;334;26
-2019;Ingestão de álcool ou de substâncias psicoativas pelo pedestre;1;0
-2019;Ingestão de álcool pelo condutor;57;4
-2019;Mal Súbito;718;101
-2019;Não guardar distância de segurança;4222;105
-2019;Objeto estático sobre o leito carroçável;440;19
-2019;Obras na pista;1;0
-2019;Pista Escorregadia;2191;105
-2019;Pista em desnível;1;0
-2019;Pista esburacada;1;0
-2019;Reação tardia ou ineficiente do condutor;1;0
-2019;Restrição de Visibilidade;496;79
-2019;Sinalização da via insuficiente ou inadequada;247;28
-2019;Transitar na contramão;3;0
-2019;Ultrapassagem Indevida;1175;329
-2019;Velocidade Incompatível;6032;702
-2020;Acessar a via sem observar a presença dos outros veículos;18;2
-2020;Acesso irregular;4;0
-2020;Acostamento em desnível;1;0
-2020;Acumulo de areia ou detritos sobre o pavimento;2;0
-2020;Acumulo de água sobre o pavimento;2;0
-2020;Acumulo de óleo sobre o pavimento;1;0
-2020;Afundamento ou ondulação no pavimento;2;0
-2020;Agressão Externa;342;17
-2020;Animais na Pista;1413;78
-2020;Ausência de reação do condutor;28;5
-2020;Ausência de sinalização;1;0
-2020;Avarias e/ou desgaste excessivo no pneu;904;64
-2020;Carga excessiva e/ou mal acondicionada;377;12
-2020;Chuva;6;0
-2020;Condutor Dormindo;2110;251
-2020;Condutor deixou de manter distância do veículo da frente;22;0
-2020;Condutor desrespeitou a iluminação vermelha do semáforo;4;0
-2020;Condutor usando celular;1;0
-2020;Conversão proibida;7;1
-2020;Curva acentuada;1;0
-2020;Defeito Mecânico no Veículo;3742;138
-2020;Defeito na Via;960;68
-2020;Deficiência do Sistema de Iluminação/Sinalização;1;0
-2020;Deficiência ou não Acionamento do Sistema de Iluminação/Sinalização do Veículo;187;44
-2020;Demais Fenômenos da natureza;1;0
-2020;Demais falhas mecânicas ou elétricas;13;0
-2020;Demais falhas na via;2;0
-2020;Desobediência às normas de trânsito pelo condutor;8800;893
-2020;Desobediência às normas de trânsito pelo pedestre;388;129
-2020;Desrespeitar a preferência no cruzamento;8;0
-2020;Entrada inopinada do pedestre;2;0
-2020;Estacionar ou parar em local proibido;1;0
-2020;Falta de Atenção do Pedestre;1641;527
-2020;Falta de Atenção à Condução;22407;1246
-2020;Falta de acostamento;3;0
-2020;Fenômenos da Natureza;221;7
-2020;Frear bruscamente;1;0
-2020;Fumaça;1;0
-2020;Iluminação deficiente;2;0
-2020;Ingestão de Substâncias Psicoativas;86;10
-2020;Ingestão de Álcool;5070;337
-2020;Ingestão de álcool e/ou substâncias psicoativas pelo pedestre;305;32
-2020;Ingestão de álcool ou de substâncias psicoativas pelo pedestre;1;0
-2020;Ingestão de álcool pelo condutor;60;4
-2020;Mal Súbito;584;73
-2020;Mal súbito do condutor;2;1
-2020;Manobra de mudança de faixa;20;7
-2020;Não guardar distância de segurança;3606;88
-2020;Objeto estático sobre o leito carroçável;446;30
-2020;Obras na pista;1;0
-2020;Pedestre andava na pista;5;2
-2020;Pedestre cruzava a pista fora da faixa;1;0
-2020;Pista Escorregadia;2018;106
-2020;Pista esburacada;1;0
-2020;Reação tardia ou ineficiente do condutor;34;5
-2020;Restrição de Visibilidade;482;56
-2020;Sinalização da via insuficiente ou inadequada;241;23
-2020;Trafegar com motocicleta (ou similar) entre as faixas;5;1
-2020;Transitar na contramão;14;5
-2020;Transitar no acostamento;4;0
-2020;Ultrapassagem Indevida;1085;318
-2020;Velocidade Incompatível;5887;712
-2021;Acessar a via sem observar a presença dos outros veículos;5198;303
-2021;Acesso irregular;550;37
-2021;Acostamento em desnível;205;8
-2021;Acumulo de areia ou detritos sobre o pavimento;252;4
-2021;Acumulo de água sobre o pavimento;573;30
-2021;Acumulo de óleo sobre o pavimento;161;5
-2021;Afundamento ou ondulação no pavimento;181;9
-2021;Animais na Pista;1214;58
-2021;Ausência de reação do condutor;5615;454
-2021;Ausência de sinalização;189;17
-2021;Avarias e/ou desgaste excessivo no pneu;1256;42
-2021;Carga excessiva e/ou mal acondicionada;313;5
-2021;Chuva;1286;91
-2021;Condutor Dormindo;2311;227
-2021;Condutor deixou de manter distância do veículo da frente;5120;112
-2021;Condutor desrespeitou a iluminação vermelha do semáforo;319;11
-2021;Condutor usando celular;125;10
-2021;Conversão proibida;874;50
-2021;Curva acentuada;325;23
-2021;Declive acentuado;40;3
-2021;Deficiência do Sistema de Iluminação/Sinalização;183;30
-2021;Deixar de acionar o farol da motocicleta (ou similar);14;0
-2021;Demais Fenômenos da natureza;84;3
-2021;Demais falhas mecânicas ou elétricas;2726;50
-2021;Demais falhas na via;224;5
-2021;Desrespeitar a preferência no cruzamento;1749;58
-2021;Desvio temporário;55;8
-2021;Entrada inopinada do pedestre;577;188
-2021;Estacionar ou parar em local proibido;147;11
-2021;Faixas de trânsito com largura insuficiente;16;2
-2021;Falta de acostamento;101;14
-2021;Falta de elemento de contenção que evite a saída do leito carroçável;74;11
-2021;Faróis desregulados;9;0
-2021;Frear bruscamente;452;7
-2021;Fumaça;37;1
-2021;Iluminação deficiente;161;22
-2021;Ingestão de substâncias psicoativas pelo condutor;99;4
-2021;Ingestão de álcool e/ou substâncias psicoativas pelo pedestre;297;33
-2021;Ingestão de álcool ou de substâncias psicoativas pelo pedestre;114;25
-2021;Ingestão de álcool pelo condutor;4589;217
-2021;Mal súbito do condutor;632;75
-2021;Manobra de mudança de faixa;3719;262
-2021;Modificação proibida;8;0
-2021;Neblina;50;2
-2021;Objeto estático sobre o leito carroçável;379;20
-2021;Obras na pista;150;8
-2021;Obstrução na via;108;2
-2021;Participar de racha;7;0
-2021;Pedestre andava na pista;701;311
-2021;Pedestre cruzava a pista fora da faixa;595;159
-2021;Pista Escorregadia;680;46
-2021;Pista em desnível;79;4
-2021;Pista esburacada;349;16
-2021;Problema com o freio;360;40
-2021;Problema na suspensão;57;1
-2021;Reação tardia ou ineficiente do condutor;6909;434
-2021;Redutor de velocidade em desacordo;9;0
-2021;Restrição de visibilidade em curvas horizontais;25;2
-2021;Restrição de visibilidade em curvas verticais;12;1
-2021;Retorno proibido;301;27
-2021;Semáforo com defeito;8;0
-2021;Sinalização encoberta;3;1
-2021;Sinalização mal posicionada;48;5
-2021;Sistema de drenagem ineficiente;3;0
-2021;Trafegar com motocicleta (ou similar) entre as faixas;820;45
-2021;Transitar na calçada;11;2
-2021;Transitar na contramão;1781;636
-2021;Transitar no acostamento;446;53
-2021;Ultrapassagem Indevida;1649;358
-2021;Velocidade Incompatível;6742;675
-2021;Área urbana sem a presença de local apropriado para a travessia de pedestres;111;24
-2022;Acessar a via sem observar a presença dos outros veículos;5590;362
-2022;Acesso irregular;660;41
-2022;Acostamento em desnível;172;6
-2022;Acumulo de areia ou detritos sobre o pavimento;226;8
-2022;Acumulo de água sobre o pavimento;597;24
-2022;Acumulo de óleo sobre o pavimento;162;8
-2022;Afundamento ou ondulação no pavimento;178;16
-2022;Animais na Pista;1274;84
-2022;Ausência de reação do condutor;7556;513
-2022;Ausência de sinalização;183;14
-2022;Avarias e/ou desgaste excessivo no pneu;1174;52
-2022;Carga excessiva e/ou mal acondicionada;295;10
-2022;Chuva;1138;63
-2022;Condutor Dormindo;2165;206
-2022;Condutor deixou de manter distância do veículo da frente;4336;74
-2022;Condutor desrespeitou a iluminação vermelha do semáforo;262;5
-2022;Condutor usando celular;121;8
-2022;Conversão proibida;822;43
-2022;Curva acentuada;251;23
-2022;Declive acentuado;34;3
-2022;Deficiência do Sistema de Iluminação/Sinalização;198;31
-2022;Deixar de acionar o farol da motocicleta (ou similar);13;1
-2022;Demais Fenômenos da natureza;82;5
-2022;Demais falhas mecânicas ou elétricas;2685;51
-2022;Demais falhas na via;258;20
-2022;Desrespeitar a preferência no cruzamento;1467;42
-2022;Desvio temporário;40;2
-2022;Entrada inopinada do pedestre;716;210
-2022;Estacionar ou parar em local proibido;153;15
-2022;Faixas de trânsito com largura insuficiente;14;2
-2022;Falta de acostamento;85;8
-2022;Falta de elemento de contenção que evite a saída do leito carroçável;93;8
-2022;Faróis desregulados;7;0
-2022;Frear bruscamente;394;7
-2022;Fumaça;33;2
-2022;Iluminação deficiente;147;27
-2022;Ingestão de substâncias psicoativas pelo condutor;83;2
-2022;Ingestão de álcool e/ou substâncias psicoativas pelo pedestre;264;19
-2022;Ingestão de álcool ou de substâncias psicoativas pelo pedestre;72;10
-2022;Ingestão de álcool pelo condutor;4350;203
-2022;Mal súbito do condutor;524;58
-2022;Manobra de mudança de faixa;3581;205
-2022;Modificação proibida;11;0
-2022;Neblina;81;6
-2022;Objeto estático sobre o leito carroçável;333;22
-2022;Obras na pista;114;10
-2022;Obstrução na via;94;4
-2022;Participar de racha;13;1
-2022;Pedestre andava na pista;662;288
-2022;Pedestre cruzava a pista fora da faixa;581;145
-2022;Pista Escorregadia;617;26
-2022;Pista em desnível;74;4
-2022;Pista esburacada;474;32
-2022;Problema com o freio;292;25
-2022;Problema na suspensão;71;2
-2022;Reação tardia ou ineficiente do condutor;8418;571
-2022;Redutor de velocidade em desacordo;8;0
-2022;Restrição de visibilidade em curvas horizontais;28;0
-2022;Restrição de visibilidade em curvas verticais;13;3
-2022;Retorno proibido;271;25
-2022;Semáforo com defeito;10;0
-2022;Sinalização encoberta;2;0
-2022;Sinalização mal posicionada;36;2
-2022;Sistema de drenagem ineficiente;1;0
-2022;Trafegar com motocicleta (ou similar) entre as faixas;797;32
-2022;Transitar na calçada;11;0
-2022;Transitar na contramão;2064;784
-2022;Transitar no acostamento;377;53
-2022;Ultrapassagem Indevida;1593;387
-2022;Velocidade Incompatível;5003;512
-2022;Área urbana sem a presença de local apropriado para a travessia de pedestres;102;16
-2023;Acessar a via sem observar a presença dos outros veículos;6325;375
-2023;Acesso irregular;713;48
-2023;Acostamento em desnível;170;15
-2023;Acumulo de areia ou detritos sobre o pavimento;277;5
-2023;Acumulo de água sobre o pavimento;579;13
-2023;Acumulo de óleo sobre o pavimento;188;2
-2023;Afundamento ou ondulação no pavimento;199;14
-2023;Animais na Pista;1329;97
-2023;Ausência de reação do condutor;9326;672
-2023;Ausência de sinalização;249;20
-2023;Avarias e/ou desgaste excessivo no pneu;1270;40
-2023;Carga excessiva e/ou mal acondicionada;254;9
-2023;Chuva;1048;64
-2023;Condutor Dormindo;2094;199
-2023;Condutor deixou de manter distância do veículo da frente;4272;107
-2023;Condutor desrespeitou a iluminação vermelha do semáforo;233;5
-2023;Condutor usando celular;128;8
-2023;Conversão proibida;883;44
-2023;Curva acentuada;233;21
-2023;Declive acentuado;25;3
-2023;Deficiência do Sistema de Iluminação/Sinalização;161;21
-2023;Deixar de acionar o farol da motocicleta (ou similar);11;1
-2023;Demais Fenômenos da natureza;80;0
-2023;Demais falhas mecânicas ou elétricas;2940;71
-2023;Demais falhas na via;270;4
-2023;Desrespeitar a preferência no cruzamento;1306;36
-2023;Desvio temporário;39;4
-2023;Entrada inopinada do pedestre;706;215
-2023;Estacionar ou parar em local proibido;162;16
-2023;Faixas de trânsito com largura insuficiente;9;0
-2023;Falta de acostamento;66;6
-2023;Falta de elemento de contenção que evite a saída do leito carroçável;87;11
-2023;Faróis desregulados;8;0
-2023;Frear bruscamente;373;6
-2023;Fumaça;27;1
-2023;Iluminação deficiente;163;27
-2023;Ingestão de substâncias psicoativas pelo condutor;89;12
-2023;Ingestão de álcool e/ou substâncias psicoativas pelo pedestre;217;21
-2023;Ingestão de álcool ou de substâncias psicoativas pelo pedestre;94;10
-2023;Ingestão de álcool pelo condutor;3599;176
-2023;Mal súbito do condutor;534;81
-2023;Manobra de mudança de faixa;3913;242
-2023;Modificação proibida;15;1
-2023;Neblina;48;9
-2023;Objeto estático sobre o leito carroçável;321;20
-2023;Obras na pista;76;0
-2023;Obstrução Via tentativa Assalto;10;0
-2023;Obstrução na via;36;2
-2023;Participar de racha;10;2
-2023;Pedestre - Ingestão de álcool/ substâncias psicoativas;4;0
-2023;Pedestre andava na pista;629;252
-2023;Pedestre cruzava a pista fora da faixa;594;139
-2023;Pista Escorregadia;532;22
-2023;Pista em desnível;27;0
-2023;Pista esburacada;369;20
-2023;Problema com o freio;299;35
-2023;Problema na suspensão;57;2
-2023;Reação tardia ou ineficiente do condutor;9855;559
-2023;Redutor de velocidade em desacordo;11;0
-2023;Restrição de visibilidade em curvas horizontais;20;2
-2023;Restrição de visibilidade em curvas verticais;8;1
-2023;Retorno proibido;325;15
-2023;Semáforo com defeito;7;0
-2023;Sinalização encoberta;9;0
-2023;Sinalização mal posicionada;46;5
-2023;Sistema de drenagem ineficiente;2;0
-2023;Suicídio (presumido);61;28
-2023;Trafegar com motocicleta (ou similar) entre as faixas;1123;57
-2023;Transitar na calçada;12;1
-2023;Transitar na contramão;2364;859
-2023;Transitar no Acostamento;271;32
-2023;Transtornos Mentais (exceto suicidio);28;3
-2023;Ultrapassagem Indevida;1620;349
-2023;Velocidade Incompatível;4240;470
-2023;Área urbana sem a presença de local apropriado para a travessia de pedestres;88;20
-2024;Acessar a via sem observar a presença dos outros veículos;6958;409
-2024;Acesso irregular;828;42
-2024;Acostamento em desnível;176;10
-2024;Acumulo de areia ou detritos sobre o pavimento;281;4
-2024;Acumulo de água sobre o pavimento;583;34
-2024;Acumulo de óleo sobre o pavimento;248;4
-2024;Afundamento ou ondulação no pavimento;169;6
-2024;Animais na Pista;1468;87
-2024;Ausência de reação do condutor;10664;761
-2024;Ausência de sinalização;198;16
-2024;Avarias e/ou desgaste excessivo no pneu;1238;32
-2024;Carga excessiva e/ou mal acondicionada;282;51
-2024;Chuva;1145;63
-2024;Condutor Dormindo;2136;220
-2024;Condutor deixou de manter distância do veículo da frente;4460;88
-2024;Condutor desrespeitou a iluminação vermelha do semáforo;291;5
-2024;Condutor usando celular;120;3
-2024;Conversão proibida;968;56
-2024;Curva acentuada;201;12
-2024;Declive acentuado;19;3
-2024;Deficiência do Sistema de Iluminação/Sinalização;178;30
-2024;Deixar de acionar o farol da motocicleta (ou similar);15;1
-2024;Demais Fenômenos da natureza;87;5
-2024;Demais falhas mecânicas ou elétricas;3390;68
-2024;Demais falhas na via;280;28
-2024;Desrespeitar a preferência no cruzamento;1358;31
-2024;Desvio temporário;26;1
-2024;Entrada inopinada do pedestre;660;187
-2024;Estacionar ou parar em local proibido;195;17
-2024;Faixas de trânsito com largura insuficiente;12;2
-2024;Falta de acostamento;61;6
-2024;Falta de elemento de contenção que evite a saída do leito carroçável;67;10
-2024;Faróis desregulados;5;1
-2024;Frear bruscamente;350;5
-2024;Fumaça;46;2
-2024;Iluminação deficiente;165;31
-2024;Ingestão de substâncias psicoativas pelo condutor;73;6
-2024;Ingestão de álcool pelo condutor;3854;194
-2024;Mal súbito do condutor;548;67
-2024;Manobra de mudança de faixa;4213;258
-2024;Modificação proibida;14;1
-2024;Neblina;66;9
-2024;Objeto estático sobre o leito carroçável;399;28
-2024;Participar de racha;20;6
-2024;Pedestre - Ingestão de álcool/ substâncias psicoativas;169;25
-2024;Pedestre andava na pista;664;292
-2024;Pedestre cruzava a pista fora da faixa;572;175
-2024;Pista Escorregadia;641;28
-2024;Pista esburacada;236;23
-2024;Problema com o freio;282;19
-2024;Problema na suspensão;45;1
-2024;Reação tardia ou ineficiente do condutor;10920;682
-2024;Redutor de velocidade em desacordo;3;0
-2024;Restrição de visibilidade em curvas horizontais;18;0
-2024;Restrição de visibilidade em curvas verticais;7;1
-2024;Retorno proibido;382;16
-2024;Semáforo com defeito;9;0
-2024;Sinalização encoberta;3;1
-2024;Sinalização mal posicionada;52;4
-2024;Sistema de drenagem ineficiente;4;1
-2024;Suicídio (presumido);187;91
-2024;Trafegar com motocicleta (ou similar) entre as faixas;1326;63
-2024;Transitar na calçada;9;0
-2024;Transitar na contramão;2461;923
-2024;Transitar no Acostamento;488;53
-2024;Transtornos Mentais (exceto suicidio);51;6
-2024;Ultrapassagem Indevida;1701;397
-2024;Velocidade Incompatível;4347;442
-2024;Área urbana sem a presença de local apropriado para a travessia de pedestres;64;17
-2025;Acessar a via sem observar a presença dos outros veículos;7097;421
-2025;Acesso irregular;768;43
-2025;Acostamento em desnível;167;9
-2025;Acumulo de areia ou detritos sobre o pavimento;308;7
-2025;Acumulo de água sobre o pavimento;477;23
-2025;Acumulo de óleo sobre o pavimento;228;5
-2025;Afundamento ou ondulação no pavimento;206;14
-2025;Animais na Pista;1305;78
-2025;Ausência de reação do condutor;11469;855
-2025;Ausência de sinalização;178;7
-2025;Avarias e/ou desgaste excessivo no pneu;1176;31
-2025;Carga excessiva e/ou mal acondicionada;256;10
-2025;Chuva;1020;46
-2025;Condutor Dormindo;2116;171
-2025;Condutor deixou de manter distância do veículo da frente;4413;89
-2025;Condutor desrespeitou a iluminação vermelha do semáforo;268;8
-2025;Condutor usando celular;189;12
-2025;Conversão proibida;1018;55
-2025;Curva acentuada;203;19
-2025;Declive acentuado;19;0
-2025;Deficiência do Sistema de Iluminação/Sinalização;165;24
-2025;Deixar de acionar o farol da motocicleta (ou similar);15;1
-2025;Demais Fenômenos da natureza;84;2
-2025;Demais falhas mecânicas ou elétricas;3385;59
-2025;Demais falhas na via;275;23
-2025;Desrespeitar a preferência no cruzamento;1259;27
-2025;Desvio temporário;45;2
-2025;Entrada inopinada do pedestre;667;209
-2025;Estacionar ou parar em local proibido;182;11
-2025;Faixas de trânsito com largura insuficiente;12;0
-2025;Falta de acostamento;60;11
-2025;Falta de elemento de contenção que evite a saída do leito carroçável;59;4
-2025;Faróis desregulados;9;0
-2025;Frear bruscamente;358;7
-2025;Fumaça;31;0
-2025;Iluminação deficiente;157;24
-2025;Ingestão de substâncias psicoativas pelo condutor;62;3
-2025;Ingestão de álcool pelo condutor;3685;223
-2025;Mal súbito do condutor;546;87
-2025;Manobra de mudança de faixa;4016;188
-2025;Modificação proibida;11;2
-2025;Neblina;50;1
-2025;Objeto estático sobre o leito carroçável;412;17
-2025;Participar de racha;22;7
-2025;Pedestre - Ingestão de álcool/ substâncias psicoativas;150;28
-2025;Pedestre andava na pista;606;252
-2025;Pedestre cruzava a pista fora da faixa;525;133
-2025;Pista Escorregadia;545;37
-2025;Pista esburacada;232;17
-2025;Problema com o freio;247;21
-2025;Problema na suspensão;38;1
-2025;Reação tardia ou ineficiente do condutor;10799;597
-2025;Redutor de velocidade em desacordo;8;0
-2025;Restrição de visibilidade em curvas horizontais;23;1
-2025;Restrição de visibilidade em curvas verticais;13;2
-2025;Retorno proibido;325;17
-2025;Semáforo com defeito;8;1
-2025;Sinalização encoberta;2;0
-2025;Sinalização mal posicionada;61;6
-2025;Sistema de drenagem ineficiente;2;0
-2025;Suicídio (presumido);190;111
-2025;Trafegar com motocicleta (ou similar) entre as faixas;1325;56
-2025;Transitar na calçada;11;0
-2025;Transitar na contramão;2475;961
-2025;Transitar no Acostamento;498;71
-2025;Transtornos Mentais (exceto suicidio);59;10
-2025;Ultrapassagem Indevida;1770;404
-2025;Velocidade Incompatível;4088;470
-2025;Área urbana sem a presença de local apropriado para a travessia de pedestres;81;12
-2026;Acessar a via sem observar a presença dos outros veículos;2270;133
-2026;Acesso irregular;270;21
-2026;Acostamento em desnível;65;1
-2026;Acumulo de areia ou detritos sobre o pavimento;92;2
-2026;Acumulo de água sobre o pavimento;266;15
-2026;Acumulo de óleo sobre o pavimento;67;0
-2026;Afundamento ou ondulação no pavimento;82;3
-2026;Animais na Pista;414;32
-2026;Ausência de reação do condutor;3701;247
-2026;Ausência de sinalização;62;5
-2026;Avarias e/ou desgaste excessivo no pneu;430;7
-2026;Carga excessiva e/ou mal acondicionada;80;3
-2026;Chuva;457;23
-2026;Condutor Dormindo;651;74
-2026;Condutor deixou de manter distância do veículo da frente;1387;38
-2026;Condutor desrespeitou a iluminação vermelha do semáforo;84;2
-2026;Condutor usando celular;55;4
-2026;Conversão proibida;333;17
-2026;Curva acentuada;48;5
-2026;Declive acentuado;5;1
-2026;Deficiência do Sistema de Iluminação/Sinalização;51;9
-2026;Deixar de acionar o farol da motocicleta (ou similar);2;0
-2026;Demais Fenômenos da natureza;24;1
-2026;Demais falhas mecânicas ou elétricas;1083;27
-2026;Demais falhas na via;99;4
-2026;Desrespeitar a preferência no cruzamento;390;9
-2026;Desvio temporário;10;0
-2026;Entrada inopinada do pedestre;196;49
-2026;Estacionar ou parar em local proibido;56;0
-2026;Faixas de trânsito com largura insuficiente;4;0
-2026;Falta de acostamento;20;3
-2026;Falta de elemento de contenção que evite a saída do leito carroçável;14;1
-2026;Faróis desregulados;2;1
-2026;Frear bruscamente;117;0
-2026;Fumaça;3;0
-2026;Iluminação deficiente;42;1
-2026;Ingestão de substâncias psicoativas pelo condutor;24;3
-2026;Ingestão de álcool pelo condutor;1096;58
-2026;Mal súbito do condutor;170;18
-2026;Manobra de mudança de faixa;1243;83
-2026;Modificação proibida;1;0
-2026;Neblina;6;3
-2026;Objeto estático sobre o leito carroçável;155;15
-2026;Participar de racha;7;3
-2026;Pedestre - Ingestão de álcool/ substâncias psicoativas;31;7
-2026;Pedestre andava na pista;190;85
-2026;Pedestre cruzava a pista fora da faixa;170;35
-2026;Pista Escorregadia;204;10
-2026;Pista esburacada;157;13
-2026;Problema com o freio;91;11
-2026;Problema na suspensão;13;1
-2026;Reação tardia ou ineficiente do condutor;3476;181
-2026;Redutor de velocidade em desacordo;4;1
-2026;Restrição de visibilidade em curvas horizontais;4;0
-2026;Restrição de visibilidade em curvas verticais;6;1
-2026;Retorno proibido;130;9
-2026;Semáforo com defeito;1;0
-2026;Sinalização encoberta;2;0
-2026;Sinalização mal posicionada;15;0
-2026;Suicídio (presumido);47;23
-2026;Trafegar com motocicleta (ou similar) entre as faixas;445;18
-2026;Transitar na calçada;4;0
-2026;Transitar na contramão;755;302
-2026;Transitar no Acostamento;163;18
-2026;Transtornos Mentais (exceto suicidio);24;2
-2026;Ultrapassagem Indevida;582;121
-2026;Velocidade Incompatível;1310;155
-2026;Área urbana sem a presença de local apropriado para a travessia de pedestres;17;4
+ano;causa_acidente;acidentes;mortos
+2023;NAO INFORMADO;67661;2151
+2023;COLISAO;192433;3117
+2023;COLISAO FRONTAL;72671;1751
+2023;OUTROS ACIDENTES DE TRANSITO;90255;746
+2024;CAPOTAMENTO;7969;912
+2022;QUEDA;55135;1059
+2022;ATROPELAMENTO COM ANIMAIS;7056;226
+2022;ENGAVETAMENTO;8859;61
+2025;COLISAO TRASEIRA;83974;386
+2026;ENGAVETAMENTO;388;1
+2026;QUEDA;1232;41
+2026;ATROPELAMENTO COM ANIMAIS;728;12
+2021;CAPOTAMENTO;14680;1016
+2019;ATROPELAMENTO COM PEDESTRE;39561;4484
+2019;ACIDENTE PESSOAL DE TRANSITO COM PEDESTRE;304;49
+2020;COLISAO LATERAL;110768;926
+2020;COLISAO TRANSVERSAL;38042;622
+2024;COLISAO;180801;2767
+2024;OUTROS ACIDENTES DE TRANSITO;47823;664
+2024;NAO INFORMADO;69978;2533
+2025;ATROPELAMENTO COM PEDESTRE;14994;1434
+2026;CHOQUE;8103;58
+2026;TOMBAMENTO;654;12
+2018;COLISAO LATERAL;95956;1093
+2018;COLISAO TRANSVERSAL;48577;577
+2022;CHOQUE;44879;2113
+2022;TOMBAMENTO;11894;771
+2022;DESCONHECIDO;325897;3714
+2021;COLISAO;175690;2943
+2023;CAPOTAMENTO;9821;843
+2019;COLISAO TRASEIRA;81780;786
+2021;COLISAO FRONTAL;52144;2059
+2021;OUTROS ACIDENTES DE TRANSITO;90422;858
+2021;NAO INFORMADO;55131;3634
+2024;COLISAO FRONTAL;104407;2242
+2026;DESCONHECIDO;31890;686
+2025;ACIDENTE PESSOAL DE TRANSITO COM PEDESTRE;10;0
+2020;NAO INFORMADO;45767;2193
+2020;OUTROS ACIDENTES DE TRANSITO;43272;1622
+2020;COLISAO FRONTAL;75663;2107
+2020;COLISAO;149000;3353
+2024;COLISAO LATERAL;135272;944
+2025;CHOQUE;111185;1134
+2025;TOMBAMENTO;9236;423
+2026;ATROPELAMENTO COM PEDESTRE;894;80
+2018;COLISAO;117896;3840
+2018;COLISAO FRONTAL;55104;2163
+2018;NAO INFORMADO;67467;4292
+2022;ATROPELAMENTO COM PEDESTRE;27620;3114
+2018;OUTROS ACIDENTES DE TRANSITO;38861;1715
+2025;DESCONHECIDO;417344;10142
+2019;ATROPELAMENTO COM ANIMAIS;9485;180
+2019;QUEDA;23323;910
+2019;ENGAVETAMENTO;5778;48
+2021;COLISAO LATERAL;73453;881
+2021;COLISAO TRANSVERSAL;32239;528
+2024;COLISAO TRANSVERSAL;47182;634
+2022;ACIDENTE PESSOAL DE TRANSITO COM PEDESTRE;5;1
+2020;ATROPELAMENTO COM PEDESTRE;28675;3349
+2023;QUEDA;43787;629
+2023;ENGAVETAMENTO;7081;68
+2024;CHOQUE;122311;2274
+2024;TOMBAMENTO;18911;1016
+2025;COLISAO LATERAL;111512;554
+2026;COLISAO;11464;135
+2026;NAO INFORMADO;1464;48
+2026;OUTROS ACIDENTES DE TRANSITO;3921;52
+2018;ATROPELAMENTO COM PEDESTRE;27122;4213
+2022;COLISAO;191651;3925
+2022;OUTROS ACIDENTES DE TRANSITO;134929;1371
+2022;NAO INFORMADO;56025;2586
+2022;COLISAO FRONTAL;41443;1395
+2025;COLISAO TRANSVERSAL;45058;359
+2026;COLISAO FRONTAL;6718;102
+2021;DESCONHECIDO;312973;4864
+2021;CHOQUE;66003;2133
+2021;TOMBAMENTO;12520;727
+2023;ATROPELAMENTO COM ANIMAIS;8030;320
+2024;DESCONHECIDO;267219;4286
+2018;ACIDENTE PESSOAL DE TRANSITO COM PEDESTRE;285;47
+2020;QUEDA;19659;896
+2020;ENGAVETAMENTO;5576;42
+2020;ATROPELAMENTO COM ANIMAIS;7414;186
+2023;ATROPELAMENTO COM PEDESTRE;29247;2857
+2025;CAPOTAMENTO;7988;631
+2018;ENGAVETAMENTO;4216;32
+2018;ATROPELAMENTO COM ANIMAIS;9052;216
+2018;QUEDA;19492;955
+2019;COLISAO FRONTAL;72472;2284
+2019;OUTROS ACIDENTES DE TRANSITO;49404;1853
+2019;NAO INFORMADO;65896;3523
+2021;COLISAO TRASEIRA;77701;911
+2024;COLISAO TRASEIRA;91895;833
+2019;COLISAO;146428;3589
+2023;ACIDENTE PESSOAL DE TRANSITO COM PEDESTRE;3;4
+2020;DESCONHECIDO;210307;3807
+2020;CHOQUE;105828;2308
+2020;TOMBAMENTO;14083;729
+2023;COLISAO TRASEIRA;95226;908
+2024;ATROPELAMENTO COM PEDESTRE;27781;3112
+2025;COLISAO;184044;2443
+2025;NAO INFORMADO;31495;849
+2025;OUTROS ACIDENTES DE TRANSITO;33398;609
+2026;COLISAO LATERAL;7962;35
+2018;CHOQUE;103936;2203
+2018;DESCONHECIDO;78330;2252
+2018;TOMBAMENTO;10742;770
+2022;COLISAO LATERAL;60635;767
+2022;COLISAO TRANSVERSAL;32858;444
+2025;COLISAO FRONTAL;89252;1406
+2026;COLISAO TRANSVERSAL;3397;32
+2021;ATROPELAMENTO COM PEDESTRE;23962;2902
+2019;CAPOTAMENTO;13070;932
+2021;ACIDENTE PESSOAL DE TRANSITO COM PEDESTRE;2;0
+2024;ACIDENTE PESSOAL DE TRANSITO COM PEDESTRE;10;7
+2020;COLISAO TRASEIRA;65168;739
+2023;CHOQUE;81860;1995
+2023;TOMBAMENTO;17152;859
+2026;CAPOTAMENTO;586;26
+2018;COLISAO TRASEIRA;63160;797
+2022;CAPOTAMENTO;15660;960
+2021;ATROPELAMENTO COM ANIMAIS;6651;206
+2023;DESCONHECIDO;329837;4103
+2019;COLISAO LATERAL;133109;1120
+2019;COLISAO TRANSVERSAL;53767;734
+2021;QUEDA;41134;1005
+2021;ENGAVETAMENTO;7456;53
+2024;ENGAVETAMENTO;5939;79
+2024;QUEDA;18938;621
+2024;ATROPELAMENTO COM ANIMAIS;9407;311
+2020;CAPOTAMENTO;13328;996
+2023;COLISAO LATERAL;102006;824
+2023;COLISAO TRANSVERSAL;38473;612
+2018;CAPOTAMENTO;8961;970
+2022;COLISAO TRASEIRA;94951;960
+2025;ENGAVETAMENTO;6380;7
+2025;QUEDA;16416;507
+2025;ATROPELAMENTO COM ANIMAIS;9007;272
+2026;COLISAO TRASEIRA;6359;12
+2019;CHOQUE;121917;2306
+2019;TOMBAMENTO;13587;783
+2019;DESCONHECIDO;205196;2942
