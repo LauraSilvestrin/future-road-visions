@@ -1,29 +1,45 @@
-"""FastAPI app: expõe /api/options, /api/forecast e /api/health."""
+"""FastAPI app — endpoints com rastreabilidade completa e exportação.
+
+Endpoints:
+- GET  /api/health
+- GET  /api/options
+- POST /api/forecast    → resultado + dados_utilizados (metadados + amostra)
+- POST /api/export      → CSV/JSON dos registros usados na análise
+"""
 from __future__ import annotations
 
+import io
+import json
 from datetime import datetime
 from typing import List, Optional
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from analysis import build_analysis
 from data_loader import Datasets, load_all
 from forecasting import fit_and_forecast
 
-app = FastAPI(title="RoadCast API", version="1.0.0")
+app = FastAPI(title="RoadCast API", version="2.0.0")
 
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"],
 )
 
 DATA: Optional[Datasets] = None
 LOAD_ERROR: Optional[str] = None
+METRICS = ["acidentes", "mortos", "feridos"]
+
+REGIOES_UF = {
+    "Norte": ["AC", "AP", "AM", "PA", "RO", "RR", "TO"],
+    "Nordeste": ["AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE"],
+    "Centro-Oeste": ["DF", "GO", "MT", "MS"],
+    "Sudeste": ["ES", "MG", "RJ", "SP"],
+    "Sul": ["PR", "RS", "SC"],
+}
 
 
 @app.on_event("startup")
@@ -43,6 +59,9 @@ def health():
         "error": LOAD_ERROR,
         "ano_min": DATA.ano_min if DATA else None,
         "ano_max": DATA.ano_max if DATA else None,
+        "ano_max_completo": DATA.ano_max_completo if DATA else None,
+        "anos_parciais": DATA.anos_parciais if DATA else [],
+        "fontes": DATA.fontes if DATA else [],
     }
 
 
@@ -56,6 +75,9 @@ def options():
         "municipios_por_uf": DATA.municipios_por_uf(),
         "ano_min": DATA.ano_min,
         "ano_max": DATA.ano_max,
+        "ano_max_completo": DATA.ano_max_completo,
+        "anos_parciais": DATA.anos_parciais,
+        "fontes": DATA.fontes,
     }
 
 
@@ -67,10 +89,7 @@ class ForecastReq(BaseModel):
     ano_fim: int
 
 
-METRICS = ["acidentes", "mortos", "feridos"]
-
-
-def _slice_history(req: ForecastReq) -> tuple[pd.DataFrame, str]:
+def _slice_history(req: ForecastReq) -> pd.DataFrame:
     assert DATA is not None
     if req.escopo == "municipio":
         if not req.uf:
@@ -81,16 +100,32 @@ def _slice_history(req: ForecastReq) -> tuple[pd.DataFrame, str]:
         ]
         if df.empty:
             raise HTTPException(404, f"Município '{req.alvo}/{req.uf}' não encontrado.")
-        return df, "municipio"
+        return df
     if req.escopo == "uf":
         df = DATA.uf[DATA.uf["uf"] == req.alvo.upper()]
         if df.empty:
             raise HTTPException(404, f"UF '{req.alvo}' não encontrada.")
-        return df, "uf"
+        return df
     df = DATA.regiao[DATA.regiao["regiao"].str.lower() == req.alvo.lower()]
     if df.empty:
         raise HTTPException(404, f"Região '{req.alvo}' não encontrada.")
-    return df, "regiao"
+    return df
+
+
+def _resumo_estatistico(df: pd.DataFrame, cols: List[str]) -> dict:
+    out = {}
+    for c in cols:
+        if c in df.columns:
+            s = pd.to_numeric(df[c], errors="coerce").dropna()
+            if not s.empty:
+                out[c] = {
+                    "soma": int(s.sum()),
+                    "media": round(float(s.mean()), 2),
+                    "mediana": round(float(s.median()), 2),
+                    "min": int(s.min()),
+                    "max": int(s.max()),
+                }
+    return out
 
 
 @app.post("/api/forecast")
@@ -99,14 +134,19 @@ def forecast(req: ForecastReq):
         raise HTTPException(503, f"Dados não carregados: {LOAD_ERROR}")
     if req.ano_fim < req.ano_inicio:
         raise HTTPException(400, "ano_fim deve ser >= ano_inicio.")
-    hist, _ = _slice_history(req)
+
+    hist = _slice_history(req)
+    cols_metricas = [c for c in METRICS if c in hist.columns]
 
     metricas_out = []
-    for metric in METRICS:
-        if metric not in hist.columns:
-            continue
+    anos_excluidos_global: set = set()
+    anos_treino_global: set = set()
+    for metric in cols_metricas:
         sub = hist[["ano", metric]].copy()
-        f = fit_and_forecast(sub, metric, req.ano_inicio, req.ano_fim)
+        f = fit_and_forecast(sub, metric, req.ano_inicio, req.ano_fim,
+                             anos_parciais=DATA.anos_parciais)
+        anos_excluidos_global.update(f.anos_excluidos)
+        anos_treino_global.update(f.anos_treino)
         metricas_out.append({
             "metric": metric,
             "serie": f.serie,
@@ -118,78 +158,128 @@ def forecast(req: ForecastReq):
             "observacoes": f.observacoes,
         })
 
-    # Ranking e heatmap só fazem sentido para escopo UF/Região
-    ranking: List[dict] | None = None
-    heatmap: List[dict] | None = None
-
+    # ---- Ranking ----
+    ranking = None
     if req.escopo == "uf":
-        # ranking: municípios dessa UF previstos para o ano_fim em "acidentes"
-        muns = DATA.municipio[DATA.municipio["uf"] == req.alvo.upper()]
-        out = []
-        for mun, sub in muns.groupby("municipio"):
-            try:
-                fc = fit_and_forecast(sub[["ano", "acidentes"]], "acidentes",
-                                      req.ano_fim, req.ano_fim)
-                last = fc.serie[-1]
-                out.append({"nome": str(mun), "valor": last["valor"], "metric": "acidentes"})
-            except Exception:  # noqa: BLE001
-                continue
-        out.sort(key=lambda r: r["valor"], reverse=True)
-        ranking = out[:15]
+        muns = DATA.municipio[
+            (DATA.municipio["uf"] == req.alvo.upper())
+            & (~DATA.municipio["ano"].isin(DATA.anos_parciais))
+        ]
+        agg = (muns.groupby("municipio")["acidentes"].sum()
+               .sort_values(ascending=False).head(15))
+        ranking = [{"nome": str(k), "valor": float(v), "metric": "acidentes"}
+                   for k, v in agg.items()]
+    elif req.escopo == "regiao":
+        ufs = REGIOES_UF.get(req.alvo, [])
+        sub = DATA.uf[DATA.uf["uf"].isin(ufs)
+                      & (~DATA.uf["ano"].isin(DATA.anos_parciais))]
+        agg = sub.groupby("uf")["acidentes"].sum().sort_values(ascending=False)
+        ranking = [{"nome": str(k), "valor": float(v), "metric": "acidentes"}
+                   for k, v in agg.items()]
 
-    if req.escopo == "regiao":
-        # ranking: UFs da região
-        # mapeamento simples região -> UFs
-        regioes_uf = {
-            "Norte": ["AC", "AP", "AM", "PA", "RO", "RR", "TO"],
-            "Nordeste": ["AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE"],
-            "Centro-Oeste": ["DF", "GO", "MT", "MS"],
-            "Sudeste": ["ES", "MG", "RJ", "SP"],
-            "Sul": ["PR", "RS", "SC"],
-        }
-        ufs = regioes_uf.get(req.alvo, [])
-        out = []
-        for u in ufs:
-            sub = DATA.uf[DATA.uf["uf"] == u]
-            if sub.empty:
-                continue
-            try:
-                fc = fit_and_forecast(sub[["ano", "acidentes"]], "acidentes",
-                                      req.ano_fim, req.ano_fim)
-                out.append({"nome": u, "valor": fc.serie[-1]["valor"], "metric": "acidentes"})
-            except Exception:  # noqa: BLE001
-                continue
-        out.sort(key=lambda r: r["valor"], reverse=True)
-        ranking = out
-
-    # heatmap: causa x ano (sempre, é nacional)
+    # ---- Heatmap causas (top 8, excluindo anos parciais) ----
+    heatmap = None
     if not DATA.causa.empty:
-        top_cat = (DATA.causa.groupby("causa_acidente")["acidentes"].sum()
+        cau = DATA.causa[~DATA.causa["ano"].isin(DATA.anos_parciais)]
+        top_cat = (cau.groupby("causa_acidente")["acidentes"].sum()
                    .nlargest(8).index.tolist())
-        sub = DATA.causa[DATA.causa["causa_acidente"].isin(top_cat)]
+        sub = cau[cau["causa_acidente"].isin(top_cat)]
         heatmap = [{"ano": int(r["ano"]), "categoria": str(r["causa_acidente"]),
                     "valor": float(r["acidentes"])} for _, r in sub.iterrows()]
+
+    # ---- Rastreabilidade: dados utilizados ----
+    total_registros = int(len(hist))
+    amostra = hist.sort_values("ano").head(50).to_dict(orient="records")
+    dados_utilizados = {
+        "total_registros": total_registros,
+        "periodo": {"inicio": int(hist["ano"].min()), "fim": int(hist["ano"].max())},
+        "fontes": DATA.fontes,
+        "filtros_aplicados": {
+            "escopo": req.escopo, "alvo": req.alvo, "uf": req.uf,
+        },
+        "colunas_utilizadas": ["ano"] + cols_metricas,
+        "anos_excluidos_do_treino": sorted(anos_excluidos_global),
+        "motivo_exclusao": (
+            "Anos com coleta parcial (totais nacionais muito abaixo da mediana "
+            "dos 3 anos anteriores) — excluídos para não distorcer a tendência."
+            if anos_excluidos_global else None
+        ),
+        "anos_treino": sorted(anos_treino_global),
+        "resumo_estatistico": _resumo_estatistico(hist, cols_metricas),
+        "amostra": amostra,
+    }
 
     analise = build_analysis(
         escopo=req.escopo, alvo=req.alvo, uf=req.uf,
         hist_min=int(hist["ano"].min()), hist_max=int(hist["ano"].max()),
-        ano_inicio=req.ano_inicio, ano_fim=req.ano_fim, metricas=metricas_out,
+        ano_inicio=req.ano_inicio, ano_fim=req.ano_fim,
+        metricas=metricas_out,
+        total_registros=total_registros,
+        fontes=DATA.fontes,
+        anos_excluidos=sorted(anos_excluidos_global),
     )
 
     return {
-        "escopo": req.escopo,
-        "alvo": req.alvo,
-        "uf": req.uf,
-        "ano_inicio": req.ano_inicio,
-        "ano_fim": req.ano_fim,
+        "escopo": req.escopo, "alvo": req.alvo, "uf": req.uf,
+        "ano_inicio": req.ano_inicio, "ano_fim": req.ano_fim,
         "historico_min": int(hist["ano"].min()),
         "historico_max": int(hist["ano"].max()),
         "metricas": metricas_out,
         "analise_textual": analise,
         "ranking": ranking,
         "heatmap": heatmap,
+        "dados_utilizados": dados_utilizados,
         "gerado_em": datetime.utcnow().isoformat() + "Z",
     }
+
+
+# ---------------- Export ----------------
+
+class ExportReq(BaseModel):
+    escopo: str = Field(pattern="^(municipio|uf|regiao)$")
+    alvo: str
+    uf: Optional[str] = None
+    formato: str = Field(default="csv", pattern="^(csv|json)$")
+    amostra: Optional[int] = None  # None = tudo
+
+
+@app.post("/api/export")
+def export(req: ExportReq):
+    if DATA is None:
+        raise HTTPException(503, f"Dados não carregados: {LOAD_ERROR}")
+    # reuso da lógica de slice
+    fake = ForecastReq(escopo=req.escopo, alvo=req.alvo, uf=req.uf,
+                       ano_inicio=DATA.ano_min, ano_fim=DATA.ano_max)
+    df = _slice_history(fake).sort_values("ano").reset_index(drop=True)
+    if req.amostra and req.amostra > 0:
+        df = df.head(req.amostra)
+
+    meta = {
+        "_fonte": " + ".join(DATA.fontes),
+        "_gerado_em": datetime.utcnow().isoformat() + "Z",
+        "_filtros": {"escopo": req.escopo, "alvo": req.alvo, "uf": req.uf},
+        "_total_registros": int(len(df)),
+        "_anos_parciais_na_base": DATA.anos_parciais,
+    }
+
+    if req.formato == "json":
+        payload = {"metadata": meta, "registros": df.to_dict(orient="records")}
+        return StreamingResponse(
+            io.BytesIO(json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")),
+            media_type="application/json",
+            headers={"Content-Disposition": f'attachment; filename="roadcast_{req.escopo}_{req.alvo}.json"'},
+        )
+
+    # CSV: cabeçalho com metadados em comentários
+    buf = io.StringIO()
+    for k, v in meta.items():
+        buf.write(f"# {k}: {json.dumps(v, ensure_ascii=False)}\n")
+    df.to_csv(buf, index=False, sep=";")
+    return StreamingResponse(
+        io.BytesIO(buf.getvalue().encode("utf-8-sig")),
+        media_type="text/csv",
+        headers={"Content-Disposition": f'attachment; filename="roadcast_{req.escopo}_{req.alvo}.csv"'},
+    )
 
 
 if __name__ == "__main__":

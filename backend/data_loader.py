@@ -1,23 +1,32 @@
-"""Carregamento dos CSVs agregados da pasta data/.
+"""Carregamento dos CSVs reais da pasta data/ (RENAEST + DATATRAN/PRF consolidados).
 
-Estrutura esperada (separador `,` ou `;`, codificação utf-8 ou latin-1):
-- municipio_ano.csv  -> ano, uf, municipio, acidentes, mortos, feridos, pessoas, veiculos
-- uf_ano.csv         -> ano, uf, acidentes, mortos, feridos
+Estrutura efetivamente encontrada (separador `;`, codificação utf-8):
+- municipio_ano.csv  -> ano, uf, municipio, acidentes, mortos, feridos, pessoas
+- uf_ano.csv         -> ano, uf, acidentes, mortos, feridos, pessoas
 - regiao_ano.csv     -> ano, regiao, acidentes, mortos, feridos
 - causa_ano.csv      -> ano, causa_acidente, acidentes, mortos
 - clima_ano.csv      -> ano, condicao_metereologica, acidentes, mortos
+
+Observações:
+- A coluna `veiculos` NÃO está presente na base atual (era do antigo schema PRF).
+- O último ano da base pode estar PARCIAL (coleta incompleta). Isto é detectado
+  comparando o total do último ano com a mediana dos 3 anos anteriores.
 """
 from __future__ import annotations
 
 import os
 import unicodedata
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import pandas as pd
 
 DATA_DIR = Path(os.environ.get("DATA_DIR", Path(__file__).parent / "data"))
+
+# Limite: se o total do último ano for menor que esta fração da mediana
+# dos 3 anos anteriores, ele é tratado como PARCIAL e excluído do treino.
+PARTIAL_YEAR_THRESHOLD = 0.6
 
 
 def _normalize(s: str) -> str:
@@ -29,7 +38,7 @@ def _read_csv(path: Path) -> pd.DataFrame:
     if not path.exists():
         raise FileNotFoundError(f"Arquivo ausente: {path}")
     last_err: Exception | None = None
-    for sep in (",", ";"):
+    for sep in (";", ","):
         for enc in ("utf-8", "latin-1"):
             try:
                 df = pd.read_csv(path, sep=sep, encoding=enc)
@@ -50,6 +59,9 @@ class Datasets:
     clima: pd.DataFrame
     ano_min: int
     ano_max: int
+    ano_max_completo: int  # último ano CONSIDERADO COMPLETO (treino)
+    anos_parciais: List[int] = field(default_factory=list)
+    fontes: List[str] = field(default_factory=lambda: ["RENAEST", "DATATRAN/PRF"])
 
     @property
     def ufs(self) -> List[str]:
@@ -62,7 +74,9 @@ class Datasets:
     def municipios_por_uf(self) -> Dict[str, List[str]]:
         out: Dict[str, List[str]] = {}
         for uf, sub in self.municipio.groupby("uf"):
-            out[str(uf).upper()] = sorted(sub["municipio"].dropna().astype(str).unique().tolist())
+            out[str(uf).upper()] = sorted(
+                sub["municipio"].dropna().astype(str).unique().tolist()
+            )
         return out
 
 
@@ -71,6 +85,21 @@ def _coerce_numeric(df: pd.DataFrame, cols: List[str]) -> pd.DataFrame:
         if c in df.columns:
             df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0)
     return df
+
+
+def _detectar_anos_parciais(uf_df: pd.DataFrame) -> List[int]:
+    """Retorna anos cujo total nacional de acidentes é < PARTIAL_YEAR_THRESHOLD
+    da mediana dos 3 anos anteriores. Tipicamente o ano corrente em coleta."""
+    tot = uf_df.groupby("ano")["acidentes"].sum().sort_index()
+    parciais: List[int] = []
+    anos = tot.index.tolist()
+    for i, ano in enumerate(anos):
+        if i < 3:
+            continue
+        ref = tot.iloc[max(0, i - 3): i].median()
+        if ref > 0 and tot.iloc[i] < PARTIAL_YEAR_THRESHOLD * ref:
+            parciais.append(int(ano))
+    return parciais
 
 
 def load_all() -> Datasets:
@@ -92,12 +121,24 @@ def load_all() -> Datasets:
         df.dropna(subset=["ano"], inplace=True)
         df["ano"] = df["ano"].astype(int)
 
-    _coerce_numeric(mun, ["acidentes", "mortos", "feridos", "pessoas", "veiculos"])
-    _coerce_numeric(uf, ["acidentes", "mortos", "feridos"])
+    # Apenas colunas REALMENTE presentes (sem 'veiculos', removida do schema novo)
+    _coerce_numeric(mun, ["acidentes", "mortos", "feridos", "pessoas"])
+    _coerce_numeric(uf, ["acidentes", "mortos", "feridos", "pessoas"])
     _coerce_numeric(reg, ["acidentes", "mortos", "feridos"])
     _coerce_numeric(cau, ["acidentes", "mortos"])
     _coerce_numeric(cli, ["acidentes", "mortos"])
 
     ano_min = int(min(mun["ano"].min(), uf["ano"].min(), reg["ano"].min()))
     ano_max = int(max(mun["ano"].max(), uf["ano"].max(), reg["ano"].max()))
-    return Datasets(mun, uf, reg, cau, cli, ano_min, ano_max)
+
+    parciais = _detectar_anos_parciais(uf)
+    ano_max_completo = ano_max
+    while ano_max_completo in parciais and ano_max_completo > ano_min:
+        ano_max_completo -= 1
+
+    return Datasets(
+        municipio=mun, uf=uf, regiao=reg, causa=cau, clima=cli,
+        ano_min=ano_min, ano_max=ano_max,
+        ano_max_completo=ano_max_completo,
+        anos_parciais=parciais,
+    )

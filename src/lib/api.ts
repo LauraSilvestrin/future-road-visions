@@ -12,7 +12,7 @@ export interface ForecastPoint {
   valor: number;
   lower: number;
   upper: number;
-  tipo: "historico" | "previsao";
+  tipo: "historico" | "previsao" | "parcial";
 }
 
 export interface MetricForecast {
@@ -22,8 +22,23 @@ export interface MetricForecast {
   comparacao_modelos: { modelo: string; mae: number; rmse: number; mape: number }[];
   taxa_crescimento_anual_pct: number;
   confiabilidade: "alta" | "media" | "baixa";
-  confiabilidade_score: number; // 0..1
+  confiabilidade_score: number;
   observacoes: string[];
+}
+
+export interface DadosUtilizados {
+  total_registros: number;
+  periodo: { inicio: number; fim: number };
+  fontes: string[];
+  filtros_aplicados: { escopo: string; alvo: string; uf?: string | null };
+  colunas_utilizadas: string[];
+  anos_excluidos_do_treino: number[];
+  motivo_exclusao: string | null;
+  anos_treino: number[];
+  resumo_estatistico: Record<string, {
+    soma: number; media: number; mediana: number; min: number; max: number;
+  }>;
+  amostra: Record<string, unknown>[];
 }
 
 export interface ForecastResponse {
@@ -38,6 +53,7 @@ export interface ForecastResponse {
   analise_textual: string;
   ranking?: { nome: string; valor: number; metric: Metric }[];
   heatmap?: { ano: number; categoria: string; valor: number }[];
+  dados_utilizados: DadosUtilizados;
   gerado_em: string;
 }
 
@@ -47,6 +63,9 @@ export interface OptionsResponse {
   municipios_por_uf: Record<string, string[]>;
   ano_min: number;
   ano_max: number;
+  ano_max_completo: number;
+  anos_parciais: number[];
+  fontes: string[];
 }
 
 export interface ForecastRequest {
@@ -57,11 +76,17 @@ export interface ForecastRequest {
   ano_fim: number;
 }
 
+export interface ExportRequest {
+  escopo: ScopeType;
+  alvo: string;
+  uf?: string;
+  formato: "csv" | "json";
+  amostra?: number;
+}
+
 async function http<T>(path: string, init?: RequestInit): Promise<T> {
   if (!API_URL) {
-    throw new Error(
-      "API_URL não configurada. Defina VITE_API_URL com a URL do backend FastAPI.",
-    );
+    throw new Error("API_URL não configurada. Defina VITE_API_URL com a URL do backend FastAPI.");
   }
   const res = await fetch(`${API_URL}${path}`, {
     ...init,
@@ -78,7 +103,26 @@ export const api = {
   options: () => http<OptionsResponse>("/api/options"),
   forecast: (body: ForecastRequest) =>
     http<ForecastResponse>("/api/forecast", { method: "POST", body: JSON.stringify(body) }),
-  health: () => http<{ status: string; data_loaded: boolean }>("/api/health"),
+  health: () => http<{ status: string; data_loaded: boolean; anos_parciais?: number[]; fontes?: string[] }>("/api/health"),
+  exportUrl: () => `${API_URL}/api/export`,
+  async downloadExport(req: ExportRequest) {
+    if (!API_URL) throw new Error("API_URL não configurada.");
+    const res = await fetch(`${API_URL}/api/export`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req),
+    });
+    if (!res.ok) throw new Error(`Erro ${res.status}: ${await res.text()}`);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `roadcast_${req.escopo}_${req.alvo}.${req.formato}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
 };
 
 export const isConfigured = () => Boolean(API_URL);

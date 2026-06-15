@@ -21,7 +21,8 @@ export function ForecastChart({ data, splitYear, color = "var(--color-chart-1)" 
     ano: p.ano,
     historico: p.tipo === "historico" ? p.valor : null,
     previsao: p.tipo === "previsao" ? p.valor : null,
-    banda: [p.lower, p.upper],
+    parcial: p.tipo === "parcial" ? p.valor : null,
+    banda: p.tipo === "previsao" ? [p.lower, p.upper] : null,
   }));
 
   return (

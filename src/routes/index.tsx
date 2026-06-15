@@ -9,6 +9,7 @@ import { RankingList } from "@/components/RankingList";
 import { StatCard } from "@/components/StatCard";
 import { AnalysisPanel } from "@/components/AnalysisPanel";
 import { ApiSetupNotice } from "@/components/ApiSetupNotice";
+import { DataUsedPanel } from "@/components/DataUsedPanel";
 import { Activity, ShieldAlert } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -53,7 +54,7 @@ function Dashboard() {
             </div>
             <div>
               <h1 className="font-display text-xl leading-tight">RoadCast</h1>
-              <p className="text-xs text-muted-foreground">Previsão de acidentes rodoviários · 2007 – 2200</p>
+              <p className="text-xs text-muted-foreground">Previsão de acidentes · RENAEST + DATATRAN/PRF</p>
             </div>
           </div>
           <div className="flex items-center gap-2 text-xs">
@@ -111,7 +112,7 @@ function Dashboard() {
       </main>
 
       <footer className="border-t border-border/60 py-6 text-center text-xs text-muted-foreground">
-        Dados: histórico agregado 2007–2026 · Backend FastAPI em <code className="font-mono text-foreground">backend/</code>
+        Fontes: base consolidada RENAEST + DATATRAN/PRF · Backend FastAPI em <code className="font-mono text-foreground">backend/</code>
       </footer>
     </div>
   );
@@ -182,8 +183,15 @@ function Results({ data }: { data: ForecastResponse }) {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {data.ranking && <RankingList ranking={data.ranking} />}
-        {data.heatmap && <Heatmap data={data.heatmap} title="Mapa de calor — categorias × ano" />}
+        {data.heatmap && <Heatmap data={data.heatmap} title="Mapa de calor — causas × ano" />}
       </div>
+
+      <DataUsedPanel
+        data={data.dados_utilizados}
+        escopo={data.escopo}
+        alvo={data.alvo}
+        uf={data.uf}
+      />
     </>
   );
 }
