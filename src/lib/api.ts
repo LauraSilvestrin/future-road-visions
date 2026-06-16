@@ -24,6 +24,17 @@ export interface MetricForecast {
   confiabilidade: "alta" | "media" | "baixa";
   confiabilidade_score: number;
   observacoes: string[];
+  auditoria?: {
+    metrica: string;
+    coluna_origem?: string;
+    historico_real_por_ano: { ano: number; valor: number }[];
+    dados_treino: { ano: number; valor: number }[];
+    previsao_bruta_ano_a_ano: { ano: number; valor_bruto: number }[];
+    previsao_pos_processamento: { ano: number; valor_pos_processamento: number; motivo_valor_zerado?: string | null }[];
+    valor_final_exibido?: { ano: number; valor: number; tipo: string }[];
+    motivo_valor_zerado: Record<string, unknown>[];
+    parametros_pos_processamento?: Record<string, number>;
+  } | null;
 }
 
 export interface DadosUtilizados {
@@ -37,6 +48,21 @@ export interface DadosUtilizados {
   anos_treino: number[];
   resumo_estatistico: Record<string, {
     soma: number; media: number; mediana: number; min: number; max: number;
+  }>;
+  mapeamento_colunas?: Record<string, string>;
+  distribuicao_valores?: Record<string, {
+    tipo_pandas: string;
+    registros_validos: number;
+    zeros: number;
+    positivos: number;
+    negativos: number;
+    min: number;
+    p25: number;
+    mediana: number;
+    media: number;
+    p75: number;
+    max: number;
+    valores_mais_frequentes: { valor: number; frequencia: number }[];
   }>;
   amostra: Record<string, unknown>[];
 }
