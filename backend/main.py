@@ -194,6 +194,8 @@ def forecast(req: ForecastReq):
         sub = hist[["ano", metric]].copy()
         f = fit_and_forecast(sub, metric, req.ano_inicio, req.ano_fim,
                              anos_parciais=DATA.anos_parciais)
+        if metric == "mortos" and f.auditoria:
+            _log_auditoria_obitos(req, f.auditoria)
         anos_excluidos_global.update(f.anos_excluidos)
         anos_treino_global.update(f.anos_treino)
         metricas_out.append({
@@ -205,6 +207,7 @@ def forecast(req: ForecastReq):
             "confiabilidade": f.confiabilidade,
             "confiabilidade_score": f.confiabilidade_score,
             "observacoes": f.observacoes,
+            "auditoria": f.auditoria if metric == "mortos" else None,
         })
 
     # ---- Ranking ----
@@ -247,6 +250,9 @@ def forecast(req: ForecastReq):
             "escopo": req.escopo, "alvo": req.alvo, "uf": req.uf,
         },
         "colunas_utilizadas": ["ano"] + cols_metricas,
+        "mapeamento_colunas": {
+            "mortos": "coluna 'mortos' dos CSVs municipio_ano.csv, uf_ano.csv, regiao_ano.csv, causa_ano.csv e clima_ano.csv",
+        },
         "anos_excluidos_do_treino": sorted(anos_excluidos_global),
         "motivo_exclusao": (
             "Anos com coleta parcial (totais nacionais muito abaixo da mediana "
@@ -255,6 +261,7 @@ def forecast(req: ForecastReq):
         ),
         "anos_treino": sorted(anos_treino_global),
         "resumo_estatistico": _resumo_estatistico(hist, cols_metricas),
+        "distribuicao_valores": _distribuicao_valores(hist, cols_metricas),
         "amostra": amostra,
     }
 
