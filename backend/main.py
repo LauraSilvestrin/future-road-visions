@@ -133,6 +133,50 @@ def _resumo_estatistico(df: pd.DataFrame, cols: List[str]) -> dict:
     return out
 
 
+def _distribuicao_valores(df: pd.DataFrame, cols: List[str]) -> dict:
+    out = {}
+    for c in cols:
+        if c not in df.columns:
+            continue
+        s = pd.to_numeric(df[c], errors="coerce").dropna()
+        if s.empty:
+            continue
+        out[c] = {
+            "tipo_pandas": str(df[c].dtype),
+            "registros_validos": int(s.count()),
+            "zeros": int((s == 0).sum()),
+            "positivos": int((s > 0).sum()),
+            "negativos": int((s < 0).sum()),
+            "min": float(s.min()),
+            "p25": float(s.quantile(0.25)),
+            "mediana": float(s.median()),
+            "media": float(s.mean()),
+            "p75": float(s.quantile(0.75)),
+            "max": float(s.max()),
+            "valores_mais_frequentes": [
+                {"valor": float(k), "frequencia": int(v)}
+                for k, v in s.value_counts(dropna=False).sort_index().head(20).items()
+            ],
+        }
+    return out
+
+
+def _log_auditoria_obitos(req: ForecastReq, auditoria: dict) -> None:
+    print("\n[AUDITORIA ÓBITOS/MORTOS]")
+    print(f"escopo={req.escopo} alvo={req.alvo} uf={req.uf} horizonte={req.ano_inicio}-{req.ano_fim}")
+    print("coluna_csv=mortos")
+    print("valor real histórico por ano:")
+    print(json.dumps(auditoria.get("historico_real_por_ano", []), ensure_ascii=False, indent=2))
+    print("dados de treino:")
+    print(json.dumps(auditoria.get("dados_treino", []), ensure_ascii=False, indent=2))
+    print("valor previsto bruto pelo modelo:")
+    print(json.dumps(auditoria.get("previsao_bruta_ano_a_ano", []), ensure_ascii=False, indent=2))
+    print("valor final entregue para exibição na interface:")
+    print(json.dumps(auditoria.get("valor_final_exibido", []), ensure_ascii=False, indent=2))
+    print("motivo de valor zerado:")
+    print(json.dumps(auditoria.get("motivo_valor_zerado", []), ensure_ascii=False, indent=2))
+
+
 @app.post("/api/forecast")
 def forecast(req: ForecastReq):
     if DATA is None:
