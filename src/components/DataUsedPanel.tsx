@@ -12,6 +12,7 @@ interface Props {
 export function DataUsedPanel({ data, escopo, alvo, uf }: Props) {
   const [busy, setBusy] = useState<string | null>(null);
   const fmt = (n: number) => n.toLocaleString("pt-BR");
+  const fmtDecimal = (n: number) => n.toLocaleString("pt-BR", { maximumFractionDigits: 2 });
 
   const download = async (formato: "csv" | "json") => {
     try {
@@ -73,6 +74,12 @@ export function DataUsedPanel({ data, escopo, alvo, uf }: Props) {
         </p>
       )}
 
+      {data.mapeamento_colunas?.mortos && (
+        <p className="mt-4 rounded-lg border border-primary/30 bg-primary/5 p-3 text-xs text-primary">
+          <strong>Origem da métrica óbitos:</strong> {data.mapeamento_colunas.mortos}.
+        </p>
+      )}
+
       {Object.keys(data.resumo_estatistico).length > 0 && (
         <div className="mt-5 overflow-x-auto">
           <h4 className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -100,6 +107,44 @@ export function DataUsedPanel({ data, escopo, alvo, uf }: Props) {
                   <td className="px-2 py-1.5 text-right font-mono">{fmt(v.max)}</td>
                 </tr>
               ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {data.distribuicao_valores?.mortos && (
+        <div className="mt-5 overflow-x-auto">
+          <h4 className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            Distribuição real da coluna mortos no recorte
+          </h4>
+          <table className="w-full text-xs">
+            <thead className="border-b border-border/60 text-muted-foreground">
+              <tr>
+                <th className="px-2 py-1.5 text-left">Tipo</th>
+                <th className="px-2 py-1.5 text-right">Registros</th>
+                <th className="px-2 py-1.5 text-right">Zeros</th>
+                <th className="px-2 py-1.5 text-right">Positivos</th>
+                <th className="px-2 py-1.5 text-right">Mín</th>
+                <th className="px-2 py-1.5 text-right">P25</th>
+                <th className="px-2 py-1.5 text-right">Mediana</th>
+                <th className="px-2 py-1.5 text-right">Média</th>
+                <th className="px-2 py-1.5 text-right">P75</th>
+                <th className="px-2 py-1.5 text-right">Máx</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-border/30">
+                <td className="px-2 py-1.5 font-mono">{data.distribuicao_valores.mortos.tipo_pandas}</td>
+                <td className="px-2 py-1.5 text-right font-mono">{fmt(data.distribuicao_valores.mortos.registros_validos)}</td>
+                <td className="px-2 py-1.5 text-right font-mono">{fmt(data.distribuicao_valores.mortos.zeros)}</td>
+                <td className="px-2 py-1.5 text-right font-mono">{fmt(data.distribuicao_valores.mortos.positivos)}</td>
+                <td className="px-2 py-1.5 text-right font-mono">{fmtDecimal(data.distribuicao_valores.mortos.min)}</td>
+                <td className="px-2 py-1.5 text-right font-mono">{fmtDecimal(data.distribuicao_valores.mortos.p25)}</td>
+                <td className="px-2 py-1.5 text-right font-mono">{fmtDecimal(data.distribuicao_valores.mortos.mediana)}</td>
+                <td className="px-2 py-1.5 text-right font-mono">{fmtDecimal(data.distribuicao_valores.mortos.media)}</td>
+                <td className="px-2 py-1.5 text-right font-mono">{fmtDecimal(data.distribuicao_valores.mortos.p75)}</td>
+                <td className="px-2 py-1.5 text-right font-mono">{fmtDecimal(data.distribuicao_valores.mortos.max)}</td>
+              </tr>
             </tbody>
           </table>
         </div>
