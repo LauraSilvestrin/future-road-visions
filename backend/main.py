@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import io
 import json
+import unicodedata
 from datetime import datetime
 from typing import List, Optional
 
@@ -40,6 +41,10 @@ REGIOES_UF = {
     "Sudeste": ["ES", "MG", "RJ", "SP"],
     "Sul": ["PR", "RS", "SC"],
 }
+
+
+def _norm_text(s: object) -> str:
+    return unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode("ascii").strip().lower()
 
 
 @app.on_event("startup")
@@ -96,7 +101,7 @@ def _slice_history(req: ForecastReq) -> pd.DataFrame:
             raise HTTPException(400, "UF é obrigatória para escopo município.")
         df = DATA.municipio[
             (DATA.municipio["uf"] == req.uf.upper())
-            & (DATA.municipio["municipio"].str.lower() == req.alvo.lower())
+            & (DATA.municipio["municipio"].map(_norm_text) == _norm_text(req.alvo))
         ]
         if df.empty:
             raise HTTPException(404, f"Município '{req.alvo}/{req.uf}' não encontrado.")
@@ -106,7 +111,7 @@ def _slice_history(req: ForecastReq) -> pd.DataFrame:
         if df.empty:
             raise HTTPException(404, f"UF '{req.alvo}' não encontrada.")
         return df
-    df = DATA.regiao[DATA.regiao["regiao"].str.lower() == req.alvo.lower()]
+    df = DATA.regiao[DATA.regiao["regiao"].map(_norm_text) == _norm_text(req.alvo)]
     if df.empty:
         raise HTTPException(404, f"Região '{req.alvo}' não encontrada.")
     return df
