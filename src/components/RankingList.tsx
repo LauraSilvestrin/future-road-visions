@@ -1,8 +1,14 @@
 import type { ForecastResponse } from "@/lib/api";
 
+function fmtValor(v: number) {
+  if (v < 1) return v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (v < 10) return v.toLocaleString("pt-BR", { maximumFractionDigits: 1 });
+  return Math.round(v).toLocaleString("pt-BR");
+}
+
 export function RankingList({ ranking }: { ranking: NonNullable<ForecastResponse["ranking"]> }) {
   if (!ranking?.length) return null;
-  const max = Math.max(...ranking.map(r => r.valor));
+  const max = Math.max(...ranking.map(r => r.valor)) || 1;
   return (
     <div className="rounded-2xl border bg-card bg-gradient-card p-5 shadow-card">
       <h3 className="mb-3 text-base font-semibold">Ranking comparativo</h3>
@@ -12,7 +18,7 @@ export function RankingList({ ranking }: { ranking: NonNullable<ForecastResponse
             <div className="flex items-baseline justify-between text-sm">
               <span className="font-mono text-xs text-muted-foreground w-6">{String(i + 1).padStart(2, "0")}</span>
               <span className="flex-1 truncate px-2">{r.nome}</span>
-              <span className="font-mono text-foreground">{Math.round(r.valor).toLocaleString("pt-BR")}</span>
+              <span className="font-mono text-foreground">{fmtValor(r.valor)}</span>
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-surface">
               <div className="h-full rounded-full bg-primary" style={{ width: `${(r.valor / max) * 100}%` }} />
