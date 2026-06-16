@@ -16,6 +16,13 @@ const labelByMetric: Record<string, string> = {
   feridos: "Feridos",
 };
 
+function formatMetricValue(metric: string, value: number) {
+  if (metric === "mortos" && value > 0 && value < 1) {
+    return value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  return Math.round(value).toLocaleString("pt-BR");
+}
+
 export function ForecastChart({ data, splitYear, color = "var(--color-chart-1)" }: Props) {
   const rows = data.serie.map(p => ({
     ano: p.ano,
@@ -66,7 +73,7 @@ export function ForecastChart({ data, splitYear, color = "var(--color-chart-1)" 
               borderRadius: 12,
               fontSize: 12,
             }}
-            formatter={(v) => (v == null ? "—" : Math.round(Number(v)).toLocaleString("pt-BR"))}
+            formatter={(v) => (v == null ? "—" : formatMetricValue(data.metric, Number(v)))}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} />
           <Area type="monotone" dataKey="banda" stroke="none" fill={`url(#band-${data.metric})`} name="Intervalo de confiança" />

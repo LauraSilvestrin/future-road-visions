@@ -83,7 +83,27 @@ class Datasets:
 def _coerce_numeric(df: pd.DataFrame, cols: List[str]) -> pd.DataFrame:
     for c in cols:
         if c in df.columns:
-            df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0)
+            raw = df[c]
+            if raw.dtype == "object":
+                cleaned = (
+                    raw.astype(str)
+                    .str.strip()
+                    .str.replace("\u00a0", "", regex=False)
+                    .str.replace(r"(?<=\d)\.(?=\d{3}(\D|$))", "", regex=True)
+                    .str.replace(",", ".", regex=False)
+                )
+                numeric = pd.to_numeric(cleaned, errors="coerce")
+                blanks = cleaned.isin(["", "nan", "None", "NaN"])
+                invalid = numeric.isna() & ~blanks
+                if invalid.any():
+                    exemplos = sorted(cleaned[invalid].astype(str).unique().tolist())[:5]
+                    raise ValueError(
+                        f"Coluna numérica inválida em '{c}': {int(invalid.sum())} valor(es) "
+                        f"não conversível(is), exemplos={exemplos}"
+                    )
+                df[c] = numeric.fillna(0)
+            else:
+                df[c] = pd.to_numeric(raw, errors="raise").fillna(0)
     return df
 
 

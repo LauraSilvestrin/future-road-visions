@@ -18,7 +18,7 @@ from __future__ import annotations
 import math
 import warnings
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -49,6 +49,7 @@ class Forecast:
     observacoes: List[str]
     anos_excluidos: List[int]  # anos parciais removidos do treino
     anos_treino: List[int]
+    auditoria: Optional[Dict[str, Any]] = None
 
 
 # ---------------- modelos ----------------
@@ -184,6 +185,33 @@ TRAINERS = {
 }
 
 
+def _records_by_year(df: pd.DataFrame, value_col: str) -> List[Dict[str, float | int]]:
+    return [
+        {"ano": int(row["ano"]), "valor": float(row[value_col])}
+        for _, row in df.sort_values("ano").iterrows()
+    ]
+
+
+def _zero_reason(raw_value: float, processed_value: float, historical_sum: float) -> Optional[str]:
+    if processed_value > 0:
+        return None
+    if historical_sum <= 0:
+        return "zerado porque a série histórica treinável não possui óbitos registrados"
+    if raw_value <= 0:
+        return "modelo retornou valor bruto menor ou igual a zero e o pós-processamento aplicou limite inferior"
+    return "valor positivo tornou-se zero após pós-processamento"
+
+
+def _damping_baseline(values: np.ndarray, value_col: str) -> float:
+    recent = float(values[-min(3, len(values)):].mean())
+    if value_col != "mortos" or float(values.sum()) <= 0:
+        return recent
+
+    positives = values[values > 0]
+    longer_recent = float(values[-min(5, len(values)):].mean())
+    return max(recent, longer_recent, float(values.mean()) * 0.5, float(positives.mean()) * 0.25)
+
+
 # ---------------- orquestrador ----------------
 
 def fit_and_forecast(
@@ -197,6 +225,7 @@ def fit_and_forecast(
     anos_parciais = anos_parciais or []
     df = history.dropna(subset=["ano", value_col]).copy()
     df = df.groupby("ano", as_index=False)[value_col].sum().sort_values("ano")
+    historico_real = _records_by_year(df, value_col)
 
     anos_excluidos: List[int] = []
     if anos_parciais:
@@ -231,12 +260,22 @@ def fit_and_forecast(
                 "ano": ano, "valor": v,
                 "lower": v * 0.9, "upper": v * 1.1, "tipo": tipo,
             })
+        auditoria = {
+            "metrica": value_col,
+            "historico_real_por_ano": historico_real,
+            "dados_treino": _records_by_year(df_treino, value_col),
+            "previsao_bruta_ano_a_ano": [],
+            "previsao_pos_processamento": [],
+            "motivo_valor_zerado": [],
+            "observacoes": ["histórico insuficiente para treino preditivo"],
+        }
         return Forecast(
             serie=serie, modelo_escolhido="Histórico (sem projeção)",
             comparacao=[], taxa_crescimento_anual_pct=0.0,
             confiabilidade="baixa", confiabilidade_score=0.15,
             observacoes=obs, anos_excluidos=anos_excluidos,
             anos_treino=sorted(int(y) for y in years),
+            auditoria=auditoria,
         )
 
     # Holdout — últimos 1-3 anos
@@ -272,16 +311,25 @@ def fit_and_forecast(
     hist_min_v = float(values.min())
     hist_max_v = float(values.max())
     last_hist_year = int(years.max())
-    # Limites realistas para evitar zero artificial / explosão
-    floor = max(0.0, hist_min_v * 0.4)
+    # Limites realistas para evitar zero artificial / explosão.
+    # Para óbitos, preservar valores esperados fracionários: uma cidade com
+    # histórico 1,0,1,1... pode ter expectativa anual <1, mas não deve virar
+    # zero por arredondamento ou por damping sobre anos recentes zerados.
+    positive_values = values[values > 0]
+    if value_col == "mortos" and positive_values.size > 0:
+        floor = float(max(0.01, min(float(positive_values.min()) * 0.10, float(values.mean()) * 0.50)))
+    else:
+        floor = max(0.0, hist_min_v * 0.4)
     ceiling = hist_max_v * 2.5
 
     target_years = list(range(min(int(years.min()), start_year), end_year + 1))
     raw = np.asarray(best.fitted(target_years), dtype=float)
 
     # Damping para projeções distantes: blenda predição com média recente
-    media_recente = float(values[-min(3, n):].mean())
+    media_recente = _damping_baseline(values, value_col)
     fit_vals = []
+    raw_forecast_records: List[Dict[str, float | int]] = []
+    processed_forecast_records: List[Dict[str, float | int | Optional[str]]] = []
     for y, v in zip(target_years, raw):
         dist = max(0, y - last_hist_year)
         if dist == 0:
@@ -291,6 +339,14 @@ def fit_and_forecast(
             w = (1.0 - DAMPING ** dist)  # 0 → cresce com distância
             adj = v * (1 - w) + media_recente * w
         adj = float(np.clip(adj, floor, ceiling))
+        if y > last_hist_year:
+            raw_v = float(v)
+            raw_forecast_records.append({"ano": int(y), "valor_bruto": raw_v})
+            processed_forecast_records.append({
+                "ano": int(y),
+                "valor_pos_processamento": adj,
+                "motivo_valor_zerado": _zero_reason(raw_v, adj, float(values.sum())),
+            })
         fit_vals.append(adj)
 
     # Resíduo histórico → banda
@@ -349,6 +405,29 @@ def fit_and_forecast(
                    "rmse": round(r.rmse, 2), "mape": round(r.mape, 2)}
                   for r in results]
 
+    auditoria = {
+        "metrica": value_col,
+        "coluna_origem": value_col,
+        "historico_real_por_ano": historico_real,
+        "dados_treino": _records_by_year(df_treino, value_col),
+        "previsao_bruta_ano_a_ano": raw_forecast_records,
+        "previsao_pos_processamento": processed_forecast_records,
+        "valor_final_exibido": [
+            {"ano": int(p["ano"]), "valor": float(p["valor"]), "tipo": p["tipo"]}
+            for p in serie
+            if p["tipo"] == "previsao"
+        ],
+        "motivo_valor_zerado": [
+            r for r in processed_forecast_records if r["motivo_valor_zerado"]
+        ],
+        "parametros_pos_processamento": {
+            "floor": floor,
+            "ceiling": ceiling,
+            "media_recente_damping": media_recente,
+            "damping": DAMPING,
+        },
+    }
+
     return Forecast(
         serie=serie,
         modelo_escolhido=best.modelo,
@@ -359,4 +438,5 @@ def fit_and_forecast(
         observacoes=obs,
         anos_excluidos=anos_excluidos,
         anos_treino=sorted(int(y) for y in years),
+        auditoria=auditoria,
     )

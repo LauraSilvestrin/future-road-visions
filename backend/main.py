@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import io
 import json
+import unicodedata
 from datetime import datetime
 from typing import List, Optional
 
@@ -40,6 +41,10 @@ REGIOES_UF = {
     "Sudeste": ["ES", "MG", "RJ", "SP"],
     "Sul": ["PR", "RS", "SC"],
 }
+
+
+def _norm_text(s: object) -> str:
+    return unicodedata.normalize("NFKD", str(s)).encode("ascii", "ignore").decode("ascii").strip().lower()
 
 
 @app.on_event("startup")
@@ -96,7 +101,7 @@ def _slice_history(req: ForecastReq) -> pd.DataFrame:
             raise HTTPException(400, "UF é obrigatória para escopo município.")
         df = DATA.municipio[
             (DATA.municipio["uf"] == req.uf.upper())
-            & (DATA.municipio["municipio"].str.lower() == req.alvo.lower())
+            & (DATA.municipio["municipio"].map(_norm_text) == _norm_text(req.alvo))
         ]
         if df.empty:
             raise HTTPException(404, f"Município '{req.alvo}/{req.uf}' não encontrado.")
@@ -106,7 +111,7 @@ def _slice_history(req: ForecastReq) -> pd.DataFrame:
         if df.empty:
             raise HTTPException(404, f"UF '{req.alvo}' não encontrada.")
         return df
-    df = DATA.regiao[DATA.regiao["regiao"].str.lower() == req.alvo.lower()]
+    df = DATA.regiao[DATA.regiao["regiao"].map(_norm_text) == _norm_text(req.alvo)]
     if df.empty:
         raise HTTPException(404, f"Região '{req.alvo}' não encontrada.")
     return df
@@ -128,6 +133,50 @@ def _resumo_estatistico(df: pd.DataFrame, cols: List[str]) -> dict:
     return out
 
 
+def _distribuicao_valores(df: pd.DataFrame, cols: List[str]) -> dict:
+    out = {}
+    for c in cols:
+        if c not in df.columns:
+            continue
+        s = pd.to_numeric(df[c], errors="coerce").dropna()
+        if s.empty:
+            continue
+        out[c] = {
+            "tipo_pandas": str(df[c].dtype),
+            "registros_validos": int(s.count()),
+            "zeros": int((s == 0).sum()),
+            "positivos": int((s > 0).sum()),
+            "negativos": int((s < 0).sum()),
+            "min": float(s.min()),
+            "p25": float(s.quantile(0.25)),
+            "mediana": float(s.median()),
+            "media": float(s.mean()),
+            "p75": float(s.quantile(0.75)),
+            "max": float(s.max()),
+            "valores_mais_frequentes": [
+                {"valor": float(k), "frequencia": int(v)}
+                for k, v in s.value_counts(dropna=False).sort_index().head(20).items()
+            ],
+        }
+    return out
+
+
+def _log_auditoria_obitos(req: ForecastReq, auditoria: dict) -> None:
+    print("\n[AUDITORIA ÓBITOS/MORTOS]")
+    print(f"escopo={req.escopo} alvo={req.alvo} uf={req.uf} horizonte={req.ano_inicio}-{req.ano_fim}")
+    print("coluna_csv=mortos")
+    print("valor real histórico por ano:")
+    print(json.dumps(auditoria.get("historico_real_por_ano", []), ensure_ascii=False, indent=2))
+    print("dados de treino:")
+    print(json.dumps(auditoria.get("dados_treino", []), ensure_ascii=False, indent=2))
+    print("valor previsto bruto pelo modelo:")
+    print(json.dumps(auditoria.get("previsao_bruta_ano_a_ano", []), ensure_ascii=False, indent=2))
+    print("valor final entregue para exibição na interface:")
+    print(json.dumps(auditoria.get("valor_final_exibido", []), ensure_ascii=False, indent=2))
+    print("motivo de valor zerado:")
+    print(json.dumps(auditoria.get("motivo_valor_zerado", []), ensure_ascii=False, indent=2))
+
+
 @app.post("/api/forecast")
 def forecast(req: ForecastReq):
     if DATA is None:
@@ -145,6 +194,8 @@ def forecast(req: ForecastReq):
         sub = hist[["ano", metric]].copy()
         f = fit_and_forecast(sub, metric, req.ano_inicio, req.ano_fim,
                              anos_parciais=DATA.anos_parciais)
+        if metric == "mortos" and f.auditoria:
+            _log_auditoria_obitos(req, f.auditoria)
         anos_excluidos_global.update(f.anos_excluidos)
         anos_treino_global.update(f.anos_treino)
         metricas_out.append({
@@ -156,6 +207,7 @@ def forecast(req: ForecastReq):
             "confiabilidade": f.confiabilidade,
             "confiabilidade_score": f.confiabilidade_score,
             "observacoes": f.observacoes,
+            "auditoria": f.auditoria if metric == "mortos" else None,
         })
 
     # ---- Ranking ----
@@ -198,6 +250,9 @@ def forecast(req: ForecastReq):
             "escopo": req.escopo, "alvo": req.alvo, "uf": req.uf,
         },
         "colunas_utilizadas": ["ano"] + cols_metricas,
+        "mapeamento_colunas": {
+            "mortos": "coluna 'mortos' dos CSVs municipio_ano.csv, uf_ano.csv, regiao_ano.csv, causa_ano.csv e clima_ano.csv",
+        },
         "anos_excluidos_do_treino": sorted(anos_excluidos_global),
         "motivo_exclusao": (
             "Anos com coleta parcial (totais nacionais muito abaixo da mediana "
@@ -206,6 +261,7 @@ def forecast(req: ForecastReq):
         ),
         "anos_treino": sorted(anos_treino_global),
         "resumo_estatistico": _resumo_estatistico(hist, cols_metricas),
+        "distribuicao_valores": _distribuicao_valores(hist, cols_metricas),
         "amostra": amostra,
     }
 
