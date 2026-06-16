@@ -357,6 +357,9 @@ def fit_and_forecast(
     # Inclui anos parciais como "parcial" na visualização
     parc_map = {int(r["ano"]): float(r[value_col]) for _, r in df.iterrows()
                 if int(r["ano"]) in anos_excluidos}
+    # Mapa de valores REAIS observados (histórico de treino) — para
+    # NÃO substituí-los pelo fitted+clipped no gráfico.
+    real_map = {int(y): float(v) for y, v in zip(years, values)}
     hist_set = set(int(y) for y in years)
 
     serie: List[dict] = []
@@ -367,6 +370,14 @@ def fit_and_forecast(
                           "lower": real * 0.9, "upper": real * 1.1, "tipo": "parcial"})
             continue
         is_hist = y in hist_set
+        if is_hist:
+            # valor REAL observado, sem clipping/floor — auditável
+            real = real_map[y]
+            serie.append({
+                "ano": int(y), "valor": real,
+                "lower": real, "upper": real, "tipo": "historico",
+            })
+            continue
         dist = max(0, y - last_hist_year)
         band = sigma * (1.0 + math.sqrt(dist) * 0.5)
         # banda mínima: 10% do valor
@@ -376,7 +387,7 @@ def fit_and_forecast(
             "valor": float(v),
             "lower": float(max(floor, v - 1.96 * band)),
             "upper": float(min(ceiling, v + 1.96 * band)),
-            "tipo": "historico" if is_hist else "previsao",
+            "tipo": "previsao",
         })
 
     # CAGR projeção
