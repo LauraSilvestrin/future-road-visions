@@ -202,6 +202,16 @@ def _zero_reason(raw_value: float, processed_value: float, historical_sum: float
     return "valor positivo tornou-se zero após pós-processamento"
 
 
+def _damping_baseline(values: np.ndarray, value_col: str) -> float:
+    recent = float(values[-min(3, len(values)):].mean())
+    if value_col != "mortos" or float(values.sum()) <= 0:
+        return recent
+
+    positives = values[values > 0]
+    longer_recent = float(values[-min(5, len(values)):].mean())
+    return max(recent, longer_recent, float(values.mean()) * 0.5, float(positives.mean()) * 0.25)
+
+
 # ---------------- orquestrador ----------------
 
 def fit_and_forecast(
@@ -215,6 +225,7 @@ def fit_and_forecast(
     anos_parciais = anos_parciais or []
     df = history.dropna(subset=["ano", value_col]).copy()
     df = df.groupby("ano", as_index=False)[value_col].sum().sort_values("ano")
+    historico_real = _records_by_year(df, value_col)
 
     anos_excluidos: List[int] = []
     if anos_parciais:
@@ -249,12 +260,22 @@ def fit_and_forecast(
                 "ano": ano, "valor": v,
                 "lower": v * 0.9, "upper": v * 1.1, "tipo": tipo,
             })
+        auditoria = {
+            "metrica": value_col,
+            "historico_real_por_ano": historico_real,
+            "dados_treino": _records_by_year(df_treino, value_col),
+            "previsao_bruta_ano_a_ano": [],
+            "previsao_pos_processamento": [],
+            "motivo_valor_zerado": [],
+            "observacoes": ["histórico insuficiente para treino preditivo"],
+        }
         return Forecast(
             serie=serie, modelo_escolhido="Histórico (sem projeção)",
             comparacao=[], taxa_crescimento_anual_pct=0.0,
             confiabilidade="baixa", confiabilidade_score=0.15,
             observacoes=obs, anos_excluidos=anos_excluidos,
             anos_treino=sorted(int(y) for y in years),
+            auditoria=auditoria,
         )
 
     # Holdout — últimos 1-3 anos
