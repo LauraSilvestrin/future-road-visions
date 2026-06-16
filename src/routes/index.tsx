@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api, isConfigured, type ForecastRequest, type ForecastResponse } from "@/lib/api";
 import { QueryPanel } from "@/components/QueryPanel";
@@ -25,6 +25,13 @@ export const Route = createFileRoute("/")({
 });
 
 const CHART_COLORS = ["var(--color-chart-1)", "var(--color-chart-2)", "var(--color-chart-4)"];
+
+function formatMetricValue(metric: string, value: number) {
+  if (metric === "mortos" && value > 0 && value < 1) {
+    return value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  return Math.round(value).toLocaleString("pt-BR");
+}
 
 function Dashboard() {
   const [result, setResult] = useState<ForecastResponse | null>(null);
@@ -148,6 +155,21 @@ function Results({ data }: { data: ForecastResponse }) {
   const future = (m: (typeof data.metricas)[number]) =>
     m.serie.filter(p => p.tipo === "previsao");
 
+  useEffect(() => {
+    const mortos = data.metricas.find(m => m.metric === "mortos");
+    if (!mortos?.auditoria) return;
+    const valorFinalExibido = mortos.serie
+      .filter(p => p.tipo === "previsao")
+      .map(p => ({ ano: p.ano, valor_modelo_pos_processamento: p.valor, valor_exibido_interface: formatMetricValue("mortos", p.valor) }));
+    console.group("[RoadCast] Auditoria da métrica mortos/óbitos");
+    console.log("valor real histórico por ano", mortos.auditoria.historico_real_por_ano);
+    console.log("dados de treino", mortos.auditoria.dados_treino);
+    console.log("valor previsto bruto pelo modelo", mortos.auditoria.previsao_bruta_ano_a_ano);
+    console.log("valor final exibido na interface", valorFinalExibido);
+    console.log("motivo de qualquer valor zerado", mortos.auditoria.motivo_valor_zerado);
+    console.groupEnd();
+  }, [data]);
+
   return (
     <>
       <div className="grid gap-4 sm:grid-cols-3">
@@ -159,9 +181,9 @@ function Results({ data }: { data: ForecastResponse }) {
             <StatCard
               key={m.metric}
               label={`${label} em ${last?.ano ?? "—"}`}
-              value={last ? Math.round(last.valor).toLocaleString("pt-BR") : "—"}
+              value={last ? formatMetricValue(m.metric, last.valor) : "—"}
               delta={m.taxa_crescimento_anual_pct}
-              sub={`IC ${last ? Math.round(last.lower).toLocaleString("pt-BR") : "—"}–${last ? Math.round(last.upper).toLocaleString("pt-BR") : "—"}`}
+              sub={`IC ${last ? formatMetricValue(m.metric, last.lower) : "—"}–${last ? formatMetricValue(m.metric, last.upper) : "—"}`}
             />
           );
         })}
