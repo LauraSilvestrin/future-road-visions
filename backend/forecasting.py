@@ -18,7 +18,7 @@ from __future__ import annotations
 import math
 import warnings
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
@@ -49,6 +49,7 @@ class Forecast:
     observacoes: List[str]
     anos_excluidos: List[int]  # anos parciais removidos do treino
     anos_treino: List[int]
+    auditoria: Optional[Dict[str, Any]] = None
 
 
 # ---------------- modelos ----------------
@@ -182,6 +183,23 @@ TRAINERS = {
     "XGBoost": _train_xgb,
     "Linear": _train_linear,
 }
+
+
+def _records_by_year(df: pd.DataFrame, value_col: str) -> List[Dict[str, float | int]]:
+    return [
+        {"ano": int(row["ano"]), "valor": float(row[value_col])}
+        for _, row in df.sort_values("ano").iterrows()
+    ]
+
+
+def _zero_reason(raw_value: float, processed_value: float, historical_sum: float) -> Optional[str]:
+    if processed_value > 0:
+        return None
+    if historical_sum <= 0:
+        return "zerado porque a série histórica treinável não possui óbitos registrados"
+    if raw_value <= 0:
+        return "modelo retornou valor bruto menor ou igual a zero e o pós-processamento aplicou limite inferior"
+    return "valor positivo tornou-se zero após pós-processamento"
 
 
 # ---------------- orquestrador ----------------
