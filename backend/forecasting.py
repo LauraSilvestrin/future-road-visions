@@ -311,16 +311,25 @@ def fit_and_forecast(
     hist_min_v = float(values.min())
     hist_max_v = float(values.max())
     last_hist_year = int(years.max())
-    # Limites realistas para evitar zero artificial / explosão
-    floor = max(0.0, hist_min_v * 0.4)
+    # Limites realistas para evitar zero artificial / explosão.
+    # Para óbitos, preservar valores esperados fracionários: uma cidade com
+    # histórico 1,0,1,1... pode ter expectativa anual <1, mas não deve virar
+    # zero por arredondamento ou por damping sobre anos recentes zerados.
+    positive_values = values[values > 0]
+    if value_col == "mortos" and positive_values.size > 0:
+        floor = float(max(0.01, min(float(positive_values.min()) * 0.10, float(values.mean()) * 0.50)))
+    else:
+        floor = max(0.0, hist_min_v * 0.4)
     ceiling = hist_max_v * 2.5
 
     target_years = list(range(min(int(years.min()), start_year), end_year + 1))
     raw = np.asarray(best.fitted(target_years), dtype=float)
 
     # Damping para projeções distantes: blenda predição com média recente
-    media_recente = float(values[-min(3, n):].mean())
+    media_recente = _damping_baseline(values, value_col)
     fit_vals = []
+    raw_forecast_records: List[Dict[str, float | int]] = []
+    processed_forecast_records: List[Dict[str, float | int | Optional[str]]] = []
     for y, v in zip(target_years, raw):
         dist = max(0, y - last_hist_year)
         if dist == 0:
@@ -330,6 +339,14 @@ def fit_and_forecast(
             w = (1.0 - DAMPING ** dist)  # 0 → cresce com distância
             adj = v * (1 - w) + media_recente * w
         adj = float(np.clip(adj, floor, ceiling))
+        if y > last_hist_year:
+            raw_v = float(v)
+            raw_forecast_records.append({"ano": int(y), "valor_bruto": raw_v})
+            processed_forecast_records.append({
+                "ano": int(y),
+                "valor_pos_processamento": adj,
+                "motivo_valor_zerado": _zero_reason(raw_v, adj, float(values.sum())),
+            })
         fit_vals.append(adj)
 
     # Resíduo histórico → banda
