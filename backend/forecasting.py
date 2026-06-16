@@ -405,6 +405,29 @@ def fit_and_forecast(
                    "rmse": round(r.rmse, 2), "mape": round(r.mape, 2)}
                   for r in results]
 
+    auditoria = {
+        "metrica": value_col,
+        "coluna_origem": value_col,
+        "historico_real_por_ano": historico_real,
+        "dados_treino": _records_by_year(df_treino, value_col),
+        "previsao_bruta_ano_a_ano": raw_forecast_records,
+        "previsao_pos_processamento": processed_forecast_records,
+        "valor_final_exibido": [
+            {"ano": int(p["ano"]), "valor": float(p["valor"]), "tipo": p["tipo"]}
+            for p in serie
+            if p["tipo"] == "previsao"
+        ],
+        "motivo_valor_zerado": [
+            r for r in processed_forecast_records if r["motivo_valor_zerado"]
+        ],
+        "parametros_pos_processamento": {
+            "floor": floor,
+            "ceiling": ceiling,
+            "media_recente_damping": media_recente,
+            "damping": DAMPING,
+        },
+    }
+
     return Forecast(
         serie=serie,
         modelo_escolhido=best.modelo,
@@ -415,4 +438,5 @@ def fit_and_forecast(
         observacoes=obs,
         anos_excluidos=anos_excluidos,
         anos_treino=sorted(int(y) for y in years),
+        auditoria=auditoria,
     )
